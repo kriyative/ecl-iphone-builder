@@ -1,6 +1,6 @@
 # ecl_root -- dir where the host-system's native ECL is installed,
 # including `cmp' module
-ecl_root = /opt/ecl	 
+ecl_root = /opt/ecl
 ecl = $(ecl_root)/bin/ecl
 
 libeclffi.a: eclffi.lisp
