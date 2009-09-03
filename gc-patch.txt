@@ -1,0 +1,33 @@
+*** a/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Wed May 27 16:04:38 2009
+--- b/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Fri Aug 28 17:38:56 2009
+*************** AO_compare_double_and_swap_double(volati
+*** 237,250 ****
+  		"	ldrexd	%0, [%1]\n"			/* get original	to r1&r2*/
+  			: "=&r"(tmp)
+  			: "r"(addr)
+! 			: );
+! 		if(tmp != old_val)	return false;
+  		__asm__ __volatile__(
+  		"	strexd  %0, %2, [%3]\n"	/* store new one if matched */
+  			: "=&r"(result),"+m"(*addr) 
+  			: "r"(new_val), "r"(addr) 
+! 			: );
+! 		if(!result)	return true;
+  	}
+  }
+  
+--- 237,250 ----
+  		"	ldrexd	%0, [%1]\n"			/* get original	to r1&r2*/
+  			: "=&r"(tmp)
+  			: "r"(addr)
+! 		    );
+! 		if(tmp != old_val)	return 0;
+  		__asm__ __volatile__(
+  		"	strexd  %0, %2, [%3]\n"	/* store new one if matched */
+  			: "=&r"(result),"+m"(*addr) 
+  			: "r"(new_val), "r"(addr) 
+! 			);
+! 		if(!result)	return 1;
+  	}
+  }
+  

@@ -1,0 +1,166 @@
+Index: swank-ecl.lisp
+===================================================================
+RCS file: /project/slime/cvsroot/slime/swank-ecl.lisp,v
+retrieving revision 1.45
+diff -u -8 -p -r1.45 swank-ecl.lisp
+--- swank-ecl.lisp	27 Jul 2009 04:08:41 -0000	1.45
++++ swank-ecl.lisp	1 Sep 2009 17:52:25 -0000
+@@ -21,16 +21,21 @@
+ 
+ (swank-backend::import-swank-mop-symbols :clos
+  '(:eql-specializer
+    :eql-specializer-object
+    :generic-function-declarations
+    :specializer-direct-methods
+    :compute-applicable-methods-using-classes)))
+ 
++(eval-when (:compile-toplevel :load-toplevel :execute)
++  (ignore-errors
++    (require 'serve-event)
++    (pushnew :serve-event *features*)))
++
+ 
+ ;;;; TCP Server
+ 
+ (eval-when (:compile-toplevel :load-toplevel :execute)
+   (require 'sockets))
+ 
+ (defun resolve-hostname (name)
+   (car (sb-bsd-sockets:host-ent-addresses
+@@ -44,16 +49,17 @@
+     (sb-bsd-sockets:socket-bind socket (resolve-hostname host) port)
+     (sb-bsd-sockets:socket-listen socket 5)
+     socket))
+ 
+ (defimplementation local-port (socket)
+   (nth-value 1 (sb-bsd-sockets:socket-name socket)))
+ 
+ (defimplementation close-socket (socket)
++  #+serve-event (remove-fd-handlers socket)
+   (sb-bsd-sockets:socket-close socket))
+ 
+ (defimplementation accept-connection (socket
+                                       &key external-format
+                                       buffering timeout)
+   (declare (ignore buffering timeout external-format))
+   (make-socket-io-stream (accept socket)))
+ 
+@@ -65,17 +71,17 @@
+ 
+ (defun accept (socket)
+   "Like socket-accept, but retry on EAGAIN."
+   (loop (handler-case
+             (return (sb-bsd-sockets:socket-accept socket))
+           (sb-bsd-sockets:interrupted-error ()))))
+ 
+ (defimplementation preferred-communication-style ()
+-  (values nil))
++  (values #+serve-event :fd-handler))
+ 
+ (defvar *external-format-to-coding-system*
+   '((:iso-8859-1
+      "latin-1" "latin-1-unix" "iso-latin-1-unix" 
+      "iso-8859-1" "iso-8859-1-unix")
+     (:utf-8 "utf-8" "utf-8-unix")))
+ 
+ (defimplementation find-external-format (coding-system)
+@@ -111,16 +117,60 @@
+ #+nil
+ (defimplementation default-directory ()
+   (namestring (ext:getcwd)))
+ 
+ (defimplementation quit-lisp ()
+   (ext:quit))
+ 
+ 
++;;;; Serve Event Handlers
++
++#+serve-event
++(progn
++  
++(defun socket-fd (socket)
++  (etypecase socket
++    (fixnum socket)
++    (sb-bsd-sockets:socket (sb-bsd-sockets:socket-file-descriptor socket))
++    (file-stream (si:file-stream-fd socket))))
++
++(defvar *descriptor-handlers* (make-hash-table :test 'eq))
++
++(defimplementation add-fd-handler (socket fun)
++  (let* ((fd (socket-fd socket))
++         (handler (gethash fd *descriptor-handlers*)))
++    (when handler
++      (serve-event:remove-fd-handler handler))
++    (prog1
++        (setf (gethash fd *descriptor-handlers*)
++              (serve-event:add-fd-handler fd
++                                          :input
++                                          #'(lambda (x)
++                                              (declare (ignorable x))
++                                              (funcall fun))))
++      (serve-event:serve-event))))
++
++(defimplementation remove-fd-handlers (socket)
++  (let ((handler (gethash (socket-fd socket) *descriptor-handlers*)))
++    (when handler
++      (serve-event:remove-fd-handler handler))))
++
++(defimplementation wait-for-input (streams &optional timeout)
++  (assert (member timeout '(nil t)))
++  (loop
++     (let ((ready (remove-if-not #'listen streams)))
++       (when ready (return ready)))
++     ;; (when timeout (return nil))
++     (when (check-slime-interrupts) (return :interrupt))
++     (serve-event:serve-event)))
++
++)                                       ; progn
++
++
+ ;;;; Compilation
+ 
+ (defvar *buffer-name* nil)
+ (defvar *buffer-start-position*)
+ (defvar *buffer-string*)
+ (defvar *compile-filename*)
+ 
+ (defun signal-compiler-condition (&rest args)
+@@ -490,16 +540,19 @@
+                                  #-#.(swank-backend::with-symbol '+ECL-VERSION-NUMBER+ 'EXT)
+                                  (skip-toplevel-forms pos s)
+                                  (skip-comments-and-whitespace s)
+                                  (read-snippet s))))))))
+    `(:error (format nil "Source definition of ~S not found" obj))))
+ 
+ ;;;; Profiling
+ 
++#+profile
++(progn
++
+ (eval-when (:compile-toplevel :load-toplevel :execute)
+   (require 'profile))
+ 
+ (defimplementation profile (fname)
+   (when fname (eval `(profile:profile ,fname))))
+ 
+ (defimplementation unprofile (fname)
+   (when fname (eval `(profile:unprofile ,fname))))
+@@ -516,17 +569,17 @@
+   "Reset profiling counters.")
+ 
+ (defimplementation profiled-functions ()
+   (profile:profile))
+ 
+ (defimplementation profile-package (package callers methods)
+   (declare (ignore callers methods))
+   (eval `(profile:profile ,(package-name (find-package package)))))
+-
++)                                       ; progn
+ 
+ ;;;; Threads
+ 
+ #+threads
+ (progn
+   (defvar *thread-id-counter* 0)
+ 
+   (defvar *thread-id-counter-lock*

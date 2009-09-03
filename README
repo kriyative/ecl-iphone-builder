@@ -1,0 +1,82 @@
+ECL Build Notes
+~~~~~~~~~~~~~~~
+
+After running git-clone, open a shell in the ecl-iphone-builder
+directory.
+
+The following script assumes the sources were unpacked in the /opt/src
+directory.
+
+  cd /opt/src/ecl-iphone-builder
+  wget http://softlayer.dl.sourceforge.net/project/ecls/ecls/9.8/ecl-9.8.4.tgz
+  wget http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc-7.2alpha2.tar.gz
+  tar xzf gc-7.2alpha2.tar.gz
+  cd gc-7.2alpha2/
+  patch -p1 < ../gc-patch.txt
+  cd ..
+  tar xzf ecl-9.8.4.tgz
+  cd ecl-9.8.4/
+  patch -p1 < ../ecl-patch.txt
+  cd src
+  mv gc gc.orig
+  ln -s ../gc-7.2alpha2 gc
+  cd ..
+
+Now comes the actual build:
+
+  ../build.sh --install ../iphone
+
+Get yourself a cup of coffee, while this runs. When it's done, there
+should be an iphone/ sub-directory in the build/directory, with the
+following contents:
+
+  device/bin/...
+  device/include/...
+  device/lib/...
+  simulator/bin/...
+  simulator/include/...
+  simulator/lib/...
+  universal/lib/libbytecmp.a
+  universal/lib/libecl.a
+  universal/lib/libeclgc.a
+  universal/lib/libeclgmp.a
+  universal/lib/libserve-event.a
+  universal/lib/libsockets.a
+  
+The universal/lib/lib* contain FAT binaries of the static libraries,
+which makes it easy to configure the Xcode project.
+
+
+eclshell Build Notes
+~~~~~~~~~~~~~~~~~~~~
+
+Download and setup a SLIME source directory. The swank-ecl-patches.txt
+has been submitted to the SLIME maintainers, and hopefully it will
+make it into the CVS builds one of these days, and the patch step will
+not be required.
+
+  cd ../eclshell
+  wget http://common-lisp.net/project/slime/snapshots/slime-current.tgz
+  tar xzf slime-current.tgz
+  ln -s slime-[0-9]* slime
+  cd slime
+  patch -p0 < ../../swank-ecl-patches.txt
+  cd ..
+
+Building the eclshell example requires a native ECL build on the host
+OSX system. Configure the path to the ecl directory in the makefile.
+
+  make			# see makefile for configuring ecl path
+
+That should generate a libeclffi.a fat library. Now open
+eclshell.xcodeproj and run a Simulator or Device build. Hopefully it
+will just work, and there will be some noisy output as SLIME loads,
+ending eventually with:
+
+;; Swank started at port: 4005.
+
+From a local emacs, run M-x slime-connect, to 127.0.0.1 (if running a
+Simulator build, for device builds look at the IP address listed on
+the device), port 4005.
+
+Happy hacking.
