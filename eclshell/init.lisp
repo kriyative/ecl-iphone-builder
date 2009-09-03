@@ -1,5 +1,6 @@
 (in-package :cl-user)
 
+(setq *print-case* :downcase)           ; I like lowercase better
 (let ((home (translate-logical-pathname "home:")))
   (setq *default-pathname-defaults* home
         *default-directory* home))
@@ -53,11 +54,18 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
   (with-output-to-string (s)
     (dolist (a args) (princ a s))))
 
+(defun pathname-parent (pathname)
+  (make-pathname :directory (or (pathname-directory pathname)
+                                (list :relative))
+                 :name nil
+                 :type nil
+                 :defaults pathname))
+
 (defun swank-load (h)
   (load (str h "slime/swank-loader.lisp") :verbose t)
   (funcall (read-from-string "swank-loader:init")))
 
-(swank-load (str (namestring (translate-logical-pathname "home:")) "eclshell.app/"))
+(swank-load (pathname-parent *load-pathname*))
 
 (defun safe-substr (str start &optional length)
   (subseq str 0 (if length (min (length str) length))))
@@ -69,6 +77,7 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
  "SLIME-listener"
  (lambda ()
    (cond
+     (setq *print-case* :downcase)
      ((string-equal (safe-substr (machine-type) 0 6) "iPhone")
       (let* ((ip-vec (sb-bsd-sockets:host-ent-address
                       (sb-bsd-sockets:get-host-by-name
