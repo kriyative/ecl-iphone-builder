@@ -19,7 +19,7 @@ directory.
   patch -p1 < ../ecl-patch.txt
   cd src
   mv gc gc.orig
-  ln -s ../gc-7.2alpha2 gc
+  ln -s ../../gc-7.2alpha2 gc
   cd ..
 
 Now comes the actual build:
