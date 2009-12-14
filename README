@@ -22,6 +22,9 @@ directory.
   ln -s ../../gc-7.2alpha2 gc
   cd ..
 
+NOTE: The device target build requires a working ECL on the build
+system.
+
 Now comes the actual build:
 
   ../build.sh --install ../iphone

@@ -166,10 +166,10 @@ echo "Installing $1 in $install_root"
 case "$1" in
     "")
 	make distclean;
-	simulator;
+	simulator || exit 1;
 	make distclean;
-	device;
-	universal;;
+	device || exit 1;
+	universal || exit 1;;
     simulator|device|universal) $1;;
     *) echo "usage: $0 {simulator|device|universal}"; exit 1;;
 esac

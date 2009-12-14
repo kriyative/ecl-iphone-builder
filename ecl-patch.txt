@@ -15,6 +15,23 @@ diff --git a/src/configure b/src/configure
 index d61002c..a4561f2 100755
 --- a/src/configure
 +++ b/src/configure
+@@ -4332,14 +4332,14 @@
+ $as_echo "$as_me: error: The program ECL is not installed in your system" >&2;}
+    { (exit 1); exit 1; }; }
+   fi
+-  ECL_MIN_TO_RUN=`${ECL_TO_RUN} -eval '(progn (print (truename "sys:ecl_min")) (si:quit))' \
++  ECL_MIN_TO_RUN=`${ECL_TO_RUN} -norc -eval '(progn (print (truename "sys:ecl_min")) (si:quit))' \
+ 	| grep '\#\P' | sed 's,#P"\(.*\)",\1,'`
+   if test -z "${ECL_MIN_TO_RUN}" -o "${ECL_MIN_TO_RUN}" = "failed"  ; then
+     { { $as_echo "$as_me:$LINENO: error: The program ECL-MIN is not installed in your system" >&5
+ $as_echo "$as_me: error: The program ECL-MIN is not installed in your system" >&2;}
+    { (exit 1); exit 1; }; }
+   fi
+-  DPP_TO_RUN=`${ECL_TO_RUN} -eval '(progn (print (truename "sys:dpp")) (si:quit))' \
++  DPP_TO_RUN=`${ECL_TO_RUN} -norc -eval '(progn (print (truename "sys:dpp")) (si:quit))' \
+ 	| grep '\#\P' | sed 's,#P"\(.*\)",\1,'`
+   if test -z "${DPP_TO_RUN}" -o "${DPP_TO_RUN}" = "failed"  ; then
+     { { $as_echo "$as_me:$LINENO: error: The program DPP is not installed in your system" >&5
 @@ -7750,13 +7750,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
  fi
  if test $ac_cv_c_long_long = yes; then
