@@ -16,6 +16,7 @@ directory.
   cd ..
   tar xzf ecl-9.8.4.tgz
   cd ecl-9.8.4/
+  patch -p1 < ../gmp-patch.txt
   patch -p1 < ../ecl-patch.txt
   cd src
   mv gc gc.orig

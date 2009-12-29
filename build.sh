@@ -47,7 +47,7 @@ simulator()
     export SDK=/Developer/Platforms/iPhoneSimulator.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneSimulator${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/gcc-4.2"
-    export CFLAGS="-g -arch i386 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -mmacosx-version-min=10.5"
+    export CFLAGS="-g -arch i386 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE -mmacosx-version-min=10.5"
     export LDFLAGS="-arch i386 -isysroot $SDKROOT -mmacosx-version-min=10.5"
     # the following two definitions are required to force the
     # simulator config.h to match the device config.h
@@ -118,7 +118,7 @@ device()
     export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneOS${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/gcc-4.2"
-    export CFLAGS="-g -arch armv6 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE"
+    export CFLAGS="-g -arch armv6 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE"
     export CPP="$SDK/usr/bin/cpp"
     export LDFLAGS="-arch armv6 -isysroot $SDKROOT"
     configure $prefix "--host=arm-apple-darwin --target=arm-apple-darwin"

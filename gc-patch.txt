@@ -1,33 +1,64 @@
-*** a/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Wed May 27 16:04:38 2009
---- b/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Fri Aug 28 17:38:56 2009
-*************** AO_compare_double_and_swap_double(volati
-*** 237,250 ****
-  		"	ldrexd	%0, [%1]\n"			/* get original	to r1&r2*/
-  			: "=&r"(tmp)
-  			: "r"(addr)
-! 			: );
-! 		if(tmp != old_val)	return false;
-  		__asm__ __volatile__(
-  		"	strexd  %0, %2, [%3]\n"	/* store new one if matched */
-  			: "=&r"(result),"+m"(*addr) 
-  			: "r"(new_val), "r"(addr) 
-! 			: );
-! 		if(!result)	return true;
-  	}
-  }
-  
---- 237,250 ----
-  		"	ldrexd	%0, [%1]\n"			/* get original	to r1&r2*/
-  			: "=&r"(tmp)
-  			: "r"(addr)
-! 		    );
-! 		if(tmp != old_val)	return 0;
-  		__asm__ __volatile__(
-  		"	strexd  %0, %2, [%3]\n"	/* store new one if matched */
-  			: "=&r"(result),"+m"(*addr) 
-  			: "r"(new_val), "r"(addr) 
-! 			);
-! 		if(!result)	return 1;
-  	}
-  }
-  
+diff -ur gc-7.2alpha2-orig/include/private/gcconfig.h gc-7.2alpha2/include/private/gcconfig.h
+--- gc-7.2alpha2-orig/include/private/gcconfig.h	2009-06-12 11:38:08.000000000 -0700
++++ gc-7.2alpha2/include/private/gcconfig.h	2009-12-16 19:06:31.000000000 -0800
+@@ -763,7 +763,11 @@
+ #   endif
+ #   ifdef DARWIN
+ #     define OS_TYPE "DARWIN"
+-#     define DYNAMIC_LOADING
++#     ifdef IPHONE
++#       undef DYNAMIC_LOADING
++#     else
++#       define DYNAMIC_LOADING
++#     endif
+ #     if defined(__ppc64__)
+ #       define ALIGNMENT 8
+ #       define CPP_WORDSZ 64
+@@ -1288,7 +1292,11 @@
+ #   ifdef DARWIN
+ #     define OS_TYPE "DARWIN"
+ #     define DARWIN_DONT_PARSE_STACK
+-#     define DYNAMIC_LOADING
++#     ifdef IPHONE
++#       undef DYNAMIC_LOADING
++#     else
++#       define DYNAMIC_LOADING
++#     endif
+       /* XXX: see get_end(3), get_etext() and get_end() should not be used.
+ 	 These aren't used when dyld support is enabled (it is by default) */
+ #     define DATASTART ((ptr_t) get_etext())
+@@ -1889,7 +1897,11 @@
+ #   ifdef DARWIN
+ #     define OS_TYPE "DARWIN"
+ #     define DARWIN_DONT_PARSE_STACK
+-#     define DYNAMIC_LOADING
++#     ifdef IPHONE
++#       undef DYNAMIC_LOADING
++#     else
++#       define DYNAMIC_LOADING
++#     endif
+       /* XXX: see get_end(3), get_etext() and get_end() should not be used.
+ 	 These aren't used when dyld support is enabled (it is by default) */
+ #     define DATASTART ((ptr_t) get_etext())
+diff -ur gc-7.2alpha2-orig/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h gc-7.2alpha2/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h
+--- gc-7.2alpha2-orig/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	2009-05-27 16:04:38.000000000 -0700
++++ gc-7.2alpha2/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	2009-09-02 19:59:44.000000000 -0700
+@@ -237,14 +237,14 @@
+ 		"	ldrexd	%0, [%1]\n"			/* get original	to r1&r2*/
+ 			: "=&r"(tmp)
+ 			: "r"(addr)
+-			: );
+-		if(tmp != old_val)	return false;
++		    );
++		if(tmp != old_val)	return 0;
+ 		__asm__ __volatile__(
+ 		"	strexd  %0, %2, [%3]\n"	/* store new one if matched */
+ 			: "=&r"(result),"+m"(*addr) 
+ 			: "r"(new_val), "r"(addr) 
+-			: );
+-		if(!result)	return true;
++			);
++		if(!result)	return 1;
+ 	}
+ }
+ 
