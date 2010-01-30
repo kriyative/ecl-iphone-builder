@@ -8,23 +8,20 @@ The following script assumes the sources were unpacked in the /opt/src
 directory.
 
   cd /opt/src/ecl-iphone-builder
-  wget http://softlayer.dl.sourceforge.net/project/ecls/ecls/9.8/ecl-9.8.4.tgz
-  wget http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc-7.2alpha2.tar.gz
-  tar xzf gc-7.2alpha2.tar.gz
-  cd gc-7.2alpha2/
-  patch -p1 < ../gc-patch.txt
-  cd ..
-  tar xzf ecl-9.8.4.tgz
-  cd ecl-9.8.4/
-  patch -p1 < ../gmp-patch.txt
-  patch -p1 < ../ecl-patch.txt
-  cd src
-  mv gc gc.orig
-  ln -s ../../gc-7.2alpha2 gc
+
+  # see <http://www.hpl.hp.com/personal/Hans_Boehm/gc/#where> for more details
+  cvs -d:pserver:anonymous@bdwgc.cvs.sourceforge.net:/cvsroot/bdwgc co bdwgc
+  cd bdwgc
+  patch -p0 < ../ecl-gc-patch.txt
   cd ..
 
-NOTE: The device target build requires a working ECL on the build
-system.
+  cvs -d:pserver:anonymous@ecls.cvs.sourceforge.net:/cvsroot/ecls co -r ECL_9_12_3 ecl
+  cd ecl
+  patch -p0 < ../ecl-patch.txt
+  cd src
+  mv gc gc.orig
+  ln -s ../../bdwgc gc
+  cd ..
 
 Now comes the actual build:
 

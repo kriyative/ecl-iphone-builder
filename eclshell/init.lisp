@@ -1,5 +1,14 @@
 (in-package :cl-user)
 
+(defvar *label* nil)
+
+(eclffi:with-autorelease-pool ()
+  (setq *label* (eclffi:make-label ""))
+  (eclffi:set-text *label* "loading ...")
+  (eclffi:add-subview (eclffi:key-window) *label*)
+  (eclffi:set-frame *label* '(10.0 50.0 300.0 35.0))
+  (eclffi:redraw *label*))
+
 (setq *print-case* :downcase)           ; I like lowercase better
 (let ((home (translate-logical-pathname "home:")))
   (setq *default-pathname-defaults* home
@@ -70,27 +79,30 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 (defun safe-substr (str start &optional length)
   (subseq str 0 (if length (min (length str) length))))
 
-(defvar *label*)
-(setq *label* (eclffi:make-label "" :x 10.0 :y 50.0 :width 300.0 :height 25.0))
+(defun get-ip-address-string (&optional ip-address)
+  (let ((ip-vec (or ip-address
+                    (sb-bsd-sockets:host-ent-address
+                     (sb-bsd-sockets:get-host-by-name
+                      (str (machine-instance) ".local"))))))
+    (format nil "~d.~d.~d.~d"
+            (aref ip-vec 0)
+            (aref ip-vec 1)
+            (aref ip-vec 2)
+            (aref ip-vec 3))))
 
 (mp:process-run-function
  "SLIME-listener"
  (lambda ()
    (cond
-     (setq *print-case* :downcase)
      ((string-equal (safe-substr (machine-type) 0 6) "iPhone")
-      (let* ((ip-vec (sb-bsd-sockets:host-ent-address
-                      (sb-bsd-sockets:get-host-by-name
-                       (str (machine-instance) ".local"))))
-             (swank::*loopback-interface* (format nil "~d.~d.~d.~d"
-                                                  (aref ip-vec 0)
-                                                  (aref ip-vec 1)
-                                                  (aref ip-vec 2)
-                                                  (aref ip-vec 3))))
-        (eclffi:set-label-text *label*
-                               (format nil "SLIME: ~a~%" swank::*loopback-interface*))
-        (swank:create-server :port 4005 :dont-close t)))
-     (t (swank:create-server :port 4005 :dont-close t)))))
+      (let ((swank::*loopback-interface* (get-ip-address-string)))
+        (swank:create-server :port 4005 :dont-close t)
+        (eclffi:set-text *label*
+                         (format nil "slime: ~a:~a~%" swank::*loopback-interface* 4005))))
+     (t
+      (swank:create-server :port 4005 :dont-close t)
+      (eclffi:set-text *label*
+                       (format nil "slime: ~a:~a~%" "127.0.0.1" 4005))))))
 
 ;; A silly test to randomly move the label around
 #+test
@@ -99,5 +111,14 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
     (if (> (random 4) 2)
         (incf x (random 2))
         (incf y (random 2)))
-    (eclffi:set-label-frame *label* :x x :y y :width 160.0 :height 25.0)
-    (eclffi:set-label-text *label* (format nil "~d,~d" x y))))
+    (eclffi:set-frame *label* (list x y 160.0 25.0))
+    (eclffi:set-text *label* (format nil "~d,~d" x y))))
+
+#+test
+(progn
+  (eclffi:set-text *label* (format nil "1 2 3"))
+
+  (eclffi:with-autorelease-pool ()
+    (eclffi:ns-log (format nil "setting new text~%"))
+    (eclffi:set-text *label* (format nil "1 2 3")))
+  )

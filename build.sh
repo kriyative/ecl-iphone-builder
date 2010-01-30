@@ -22,7 +22,8 @@ base_config_opts="--disable-c99complex \
 	--with-rt=no \
 	--with-serve-event=builtin \
 	--with-tcp=builtin \
-	--with-x=no"
+	--with-x=no \
+	--with-dffi=no"
 
 configure()
 {
@@ -37,9 +38,10 @@ configure()
 build()
 {
     prefix=$1
-    make && make install
+    make < /dev/null
+    make || exit 1
+    make install || exit 1
     cp -p build/*.a $prefix/lib
-    chmod +x $prefix/lib/ecl*/dpp $prefix/lib/ecl*/ecl_min
 }
 
 simulator()
@@ -55,6 +57,7 @@ simulator()
     export dynamic_ffi="no"
     configure $install_root/simulator
     build $install_root/simulator
+    chmod +x $install_root/simulator/lib/ecl*/dpp $install_root/simulator/lib/ecl*/ecl_min
 }
 
 cross_config()
@@ -142,6 +145,7 @@ universal()
 	rm -f $prefix/universal/lib/lib${lib}.a
 	lipo $prefix/device/lib/lib${lib}.a $prefix/simulator/lib/lib${lib}.a $prefix/universal/lib/lib${lib}.a
     done
+    (cd $prefix/universal; ln -s ../device/include .)
 }
 
 optsp="1"

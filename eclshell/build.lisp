@@ -52,6 +52,7 @@
     (build target
            source-files
            :ecl-include-dir "/opt/iphone/simulator/include/"
+           :cflags '("-arch i386")
            :sdk sdk
            :sysroot (format nil "~a/SDKs/iPhoneSimulator~a.sdk" sdk sdk-ver)))
   (let ((lib (str "lib" target "_simulator.a")))

@@ -1,5 +1,8 @@
-build
-*.mode1v3
-*.pbxuser
-*.o
 *.a
+*.mode1v3
+*.o
+*.pbxuser
+/eclffi.c
+/eclffi.data
+/eclffi.h
+build

@@ -237,7 +237,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../iphone/simulator/include;
+				HEADER_SEARCH_PATHS = ../iphone/universal/include;
 				LIBRARY_SEARCH_PATHS = ../iphone/universal/lib;
 				OTHER_LDFLAGS = (
 					"-lecl",
@@ -248,6 +248,7 @@
 					"-lsockets",
 				);
 				PREBINDING = NO;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
