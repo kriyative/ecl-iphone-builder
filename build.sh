@@ -4,18 +4,36 @@
 ## simulator and device. The universal option will build fat libs from
 ## the simulator and device builds.
 ##
-install_root=/opt/iphone
-iphone_sdk_ver=3.0
-base_config_opts="--disable-c99complex \
+enable_threads=yes
+host_config_opts="\
+	--disable-longdouble \
+	--enable-unicode \
+	--enable-threads=$enable_threads \
+	--with-asdf=yes \
+	--with-bytecmp=builtin \
+	--with-cmp=builtin \
+	--with-clx=no \
+	--with-debug-cflags=no \
+	--with-defsystem=no \
+	--with-fpe=yes \
+	--with-profile=no \
+	--with-rt=no \
+	--with-serve-event=yes \
+	--with-tcp=yes \
+	--with-x=no \
+	--with-dffi=no"
+base_config_opts="\
+	--disable-c99complex \
 	--disable-longdouble \
 	--disable-soname \
-	--disable-unicode \
     	--disable-shared \
-	--enable-threads \
+	--enable-unicode \
+	--enable-threads=$enable_threads \
 	--with-asdf=no \
 	--with-bytecmp=builtin \
 	--with-cmp=no \
 	--with-clx=no \
+	--with-debug-cflags=no \
 	--with-defsystem=no \
 	--with-fpe=yes \
 	--with-profile=no \
@@ -29,19 +47,34 @@ configure()
 {
     prefix=$1
     config_opts=$2
-    echo ./configure --prefix=$prefix $config_opts $base_config_opts
+    echo ./configure --prefix=$prefix $config_opts
     if [ ! -f Makefile ]; then
-	./configure --prefix=$prefix $config_opts $base_config_opts
+	./configure --prefix=$prefix $config_opts
     fi
 }
 
 build()
 {
     prefix=$1
+    cd build
     make < /dev/null
     make || exit 1
     make install || exit 1
-    cp -p build/*.a $prefix/lib
+    cp -p *.a $prefix/lib
+    cd ..
+}
+
+distclean()
+{
+    make distclean || echo "Nothing to clean."
+    rm -f Makefile
+}
+
+host()
+{
+    export CFLAGS="-g"
+    configure $install_root/host "${host_config_opts}"
+    build $install_root/host
 }
 
 simulator()
@@ -55,7 +88,7 @@ simulator()
     # simulator config.h to match the device config.h
     export ac_cv_header_ffi_ffi_h="no"
     export dynamic_ffi="no"
-    configure $install_root/simulator
+    configure $install_root/simulator "${base_config_opts}"
     build $install_root/simulator
     chmod +x $install_root/simulator/lib/ecl*/dpp $install_root/simulator/lib/ecl*/ecl_min
 }
@@ -115,8 +148,8 @@ ECL_TO_RUN=${ecl_to_run}
 device()
 {
     prefix=$install_root/device
-    mkdir build
     ecl_root=$install_root/simulator
+    mkdir -p build
     cross_config "$ecl_root/bin/ecl" > build/cross_config
     export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneOS${iphone_sdk_ver}.sdk
@@ -124,7 +157,7 @@ device()
     export CFLAGS="-g -arch armv6 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE"
     export CPP="$SDK/usr/bin/cpp"
     export LDFLAGS="-arch armv6 -isysroot $SDKROOT"
-    configure $prefix "--host=arm-apple-darwin --target=arm-apple-darwin"
+    configure $prefix "--host=arm-apple-darwin --target=arm-apple-darwin ${base_config_opts}"
     build $prefix
 }
 
@@ -145,35 +178,50 @@ universal()
 	rm -f $prefix/universal/lib/lib${lib}.a
 	lipo $prefix/device/lib/lib${lib}.a $prefix/simulator/lib/lib${lib}.a $prefix/universal/lib/lib${lib}.a
     done
-    (cd $prefix/universal; ln -s ../device/include .)
+    (cd $prefix/universal; ln -fs ../device/include .)
 }
 
-optsp="1"
-while [ "$optsp" == "1" ]; do
-    case "$1" in
-	"--install")
-	    shift;
-	    install_root=$1;
-	    shift;;
-	"--*")
-	    echo "unknown option: $1";
-	    shift;;
-	*)
-	    optsp=0;;
+target=simulator
+iphone_sdk_ver=3.0
+clean=no
+
+usage()
+{
+    echo "Usage: `basename $0` [-d <dir>] [-t <target>] [-c] [-v <sdk-ver>]"
+    echo ""
+    echo " dir     -- prefix directory where the ecl libraries will be installed [$install_root]"
+    echo " target  -- one of: host, simulator, device [$target]"
+    echo " sdk-ver -- the sdk version to use [$iphone_sdk_ver]"
+}
+
+while getopts 'd:v:t:c' o; do
+case "$o" in
+    d) install_root="$OPTARG";;
+    v) iphone_sdk_ver="$OPTARG";;
+    t) target="$OPTARG";;
+    c) clean=yes;;
+    ?) usage
     esac
 done
+shift $(($OPTIND - 1))
 
+echo "Installing in $install_root"
 [ -d $install_root ] || mkdir -p $install_root
-install_root=$(cd $install_root; pwd)
-echo "Installing $1 in $install_root"
 
-case "$1" in
-    "")
-	make distclean;
+case "$target" in
+    host|simulator|device|universal)
+	if [ "$clean" = "yes" ]; then distclean; fi;
+	$target;;
+    all)
+	distclean;
+	host || exit 1;
+	distclean;
 	simulator || exit 1;
-	make distclean;
+	distclean;
 	device || exit 1;
-	universal || exit 1;;
-    simulator|device|universal) $1;;
-    *) echo "usage: $0 {simulator|device|universal}"; exit 1;;
+	universal;;
+    *)
+	echo "Unknown target $target";
+	usage;
+	exit 1;;
 esac

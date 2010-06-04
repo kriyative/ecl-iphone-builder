@@ -106,13 +106,15 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 
 ;; A silly test to randomly move the label around
 #+test
-(let ((x 50) (y 50))
-  (dotimes (i 1000)
-    (if (> (random 4) 2)
-        (incf x (random 2))
-        (incf y (random 2)))
-    (eclffi:set-frame *label* (list x y 160.0 25.0))
-    (eclffi:set-text *label* (format nil "~d,~d" x y))))
+(eclffi:with-autorelease-pool ()
+  (let ((x 160) (y 240))
+    (dotimes (i 1000)
+      (if (> (random 4) 2)
+          (setq x (max 10 (funcall (if (> (random 10) 5) '+ '-) x (random 8))))
+          (setq y (max 10 (funcall (if (> (random 10) 5) '+ '-) y (random 8)))))
+      (eclffi:set-frame *label* (list x y 160.0 25.0))
+      (eclffi:set-text *label* (format nil "~d,~d" x y))
+      (eclffi:redraw *label*))))
 
 #+test
 (progn

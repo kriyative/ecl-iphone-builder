@@ -4,7 +4,7 @@ RCS file: /project/slime/cvsroot/slime/swank-ecl.lisp,v
 retrieving revision 1.50
 diff -u -r1.50 swank-ecl.lisp
 --- swank-ecl.lisp	19 Dec 2009 14:56:06 -0000	1.50
-+++ swank-ecl.lisp	29 Jan 2010 18:35:02 -0000
++++ swank-ecl.lisp	8 Feb 2010 16:31:56 -0000
 @@ -30,6 +30,11 @@
    (declare (ignore gf classes))
    (values nil nil))
@@ -210,7 +210,7 @@ diff -u -r1.50 swank-ecl.lisp
      (queue '() :type list))
  
    (defun mailbox (thread)
-@@ -629,26 +699,26 @@
+@@ -629,26 +699,24 @@
    (defimplementation send (thread message)
      (let* ((mbox (mailbox thread))
             (mutex (mailbox.mutex mbox)))
@@ -249,8 +249,6 @@ diff -u -r1.50 swank-ecl.lisp
 +                  (tail (member-if test q)))
 +             (when tail
 +               (setf (mailbox.queue mbox) (nconc (ldiff q tail) (cdr tail)))
-+               #+rkris
-+               (format t "receive-if: ~s ~s~%" (current-thread) (mailbox.queue mbox))
 +               (return (car tail))))
 +           (when (eq timeout t) (return (values nil t)))
 +           (mp:condition-variable-wait (mailbox.waitqueue mbox) mutex)))))
@@ -263,7 +261,7 @@ RCS file: /project/slime/cvsroot/slime/swank.lisp,v
 retrieving revision 1.682
 diff -u -r1.682 swank.lisp
 --- swank.lisp	3 Jan 2010 15:46:44 -0000	1.682
-+++ swank.lisp	29 Jan 2010 18:35:02 -0000
++++ swank.lisp	8 Feb 2010 16:31:56 -0000
 @@ -1097,11 +1097,11 @@
      (with-panic-handler (connection)
        (loop (dispatch-event (receive))))))
@@ -284,7 +282,7 @@ RCS file: /project/slime/cvsroot/slime/doc/slime.texi,v
 retrieving revision 1.93
 diff -u -r1.93 slime.texi
 --- doc/slime.texi	5 Jan 2010 09:33:09 -0000	1.93
-+++ doc/slime.texi	29 Jan 2010 18:35:03 -0000
++++ doc/slime.texi	8 Feb 2010 16:31:57 -0000
 @@ -2964,7 +2964,7 @@
  @SLIME{} is an Extension of @acronym{SLIM} by Eric Marsden. At the
  time of writing, the authors and code-contributors of @SLIME{} are:
