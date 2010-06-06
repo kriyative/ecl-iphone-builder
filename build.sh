@@ -119,8 +119,8 @@ CL_LONG_BITS=32
 ### 1.3) Order of bytes within a word
 ECL_BIGENDIAN=no
 
-### 1.4) What characters signal an end of line. May be LF (Linefeed or \\n)
-###      CR (Carriage return or \\r), and CRLF (CR followed by LF).
+### 1.4) What characters signal an end of line. May be LF (Linefeed)
+###      CR (Carriage return), and CRLF (CR followed by LF).
 ECL_NEWLINE=LF
 
 ### 1.5) Can we guess how many characters are available for reading from
