@@ -15,6 +15,8 @@
 
 - (void) postLoadInitialize
 {
+    const char *curdir = [[[NSBundle mainBundle] resourcePath] UTF8String];
+    chdir(curdir);
     ecl_boot([[[NSBundle mainBundle] resourcePath] UTF8String]);
 }
 

@@ -3,6 +3,7 @@
 (setq *print-case* :downcase)
 
 (defvar *ecl-dir* #p"/opt/iphone/ecl/")
+(defvar *default-sdk-ver* "3.0")
 
 (defun compile-if-old (destdir sources &rest options)
   (unless (probe-file destdir)
@@ -50,7 +51,7 @@
 
 (defun build-simulator (target source-files)
   (let* ((sdk "/Developer/Platforms/iPhoneSimulator.platform/Developer")
-         (sdk-ver "3.0"))
+         (sdk-ver *default-sdk-ver*))
     (build target
            source-files
            :ecl-include-dir (merge-pathnames "simulator/include/" *ecl-dir*)
@@ -63,7 +64,7 @@
 
 (defun build-device (target source-files)
   (let* ((sdk "/Developer/Platforms/iPhoneOS.platform/Developer")
-         (sdk-ver "3.0")
+         (sdk-ver *default-sdk-ver*)
          (sysroot (format nil "~a/SDKs/iPhoneOS~a.sdk" sdk sdk-ver)))
     (build target
            source-files
