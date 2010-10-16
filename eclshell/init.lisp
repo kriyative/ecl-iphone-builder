@@ -98,7 +98,8 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
       (let ((swank::*loopback-interface* (get-ip-address-string)))
         (swank:create-server :port 4005 :dont-close t)
         (eclffi:set-text *label*
-                         (format nil "slime: ~a:~a~%" swank::*loopback-interface* 4005))))
+                         (format nil "slime: ~a:~a~%"
+                                 swank::*loopback-interface* 4005))))
      (t
       (swank:create-server :port 4005 :dont-close t)
       (eclffi:set-text *label*
@@ -121,6 +122,6 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
   (eclffi:set-text *label* (format nil "1 2 3"))
 
   (eclffi:with-autorelease-pool ()
-    (eclffi:ns-log (format nil "setting new text~%"))
-    (eclffi:set-text *label* (format nil "1 2 3")))
+    (eclffi:set-text *label* "hello lisp")
+    (eclffi:redraw *label*))
   )

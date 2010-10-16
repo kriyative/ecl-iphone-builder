@@ -82,13 +82,17 @@ simulator()
     export SDK=/Developer/Platforms/iPhoneSimulator.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneSimulator${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/gcc-4.2"
-    export CFLAGS="-g -arch i386 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE -DIPHONE_SIMULATOR -mmacosx-version-min=10.6 -fobjc-abi-version=2"
-    export LDFLAGS="-arch i386 -isysroot $SDKROOT -mmacosx-version-min=10.6 -all_load -Xlinker -objc_abi_version -Xlinker 2"
+    export CFLAGS="-g -arch i386 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE -DIPHONE_SIMULATOR -mmacosx-version-min=10.5 -fobjc-abi-version=2"
+    export LDFLAGS="-arch i386 -isysroot $SDKROOT -mmacosx-version-min=10.5 -all_load -Xlinker -objc_abi_version -Xlinker 2"
     # the following two definitions are required to force the
     # simulator config.h to match the device config.h
     export ac_cv_header_ffi_ffi_h="no"
     export dynamic_ffi="no"
     configure $install_root/simulator "${base_config_opts}"
+    {
+	echo "#define HAVE_NATIVE_mpn_add_n 1";
+	echo "#define HAVE_NATIVE_mpn_sub_n 1";
+    } >> build/gmp/config.h
     build $install_root/simulator
     chmod +x $install_root/simulator/lib/ecl*/dpp $install_root/simulator/lib/ecl*/ecl_min
 }
@@ -182,7 +186,7 @@ universal()
 }
 
 target=simulator
-iphone_sdk_ver=3.0
+iphone_sdk_ver=3.2
 clean=no
 
 usage()

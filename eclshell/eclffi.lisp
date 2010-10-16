@@ -2,6 +2,8 @@
   (:use :cl :ffi :uffi)
   (:export
    :alloc
+   :add-subview
+   :key-window
    :make-label
    :ns-log
    :redraw

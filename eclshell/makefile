@@ -1,10 +1,24 @@
 # ecl_root -- dir where the host-system's native ECL is installed,
 # including `cmp' module
-ecl_root = /opt/ecl
-ecl = $(ecl_root)/bin/ecl
+sdk_ver = 3.2
+ecl_root = /opt/ecl-ios
+host_ecl = $(ecl_root)/host
 
-libeclffi.a: eclffi.lisp
-	DYLD_LIBRARY_PATH=$(ecl_root)/lib $(ecl) -shell build.lisp
+module = eclffi
+sources = "$(module).lisp"
+
+# Note: the trailing slash on the :ecl-root keyword arg to `build-all'
+# is required for Lisp pathnames to work right
+lib$(module).a: $(module).lisp
+	f=`mktemp -t build`; \
+	echo '(build-all "$(module)" \
+                         (list $(sources)) \
+                         :sdk-ver "$(sdk_ver)" \
+                         :ecl-root "$(ecl_root)/")' > $$f; \
+	cat $$f; \
+	DYLD_LIBRARY_PATH=$(host_ecl)/lib \
+	$(host_ecl)/bin/ecl -load build.lisp -shell $$f; \
+	rm -f $$f
 
 clean:
-	rm -f eclffi.data eclffi.[cho] libeclffi*.a
+	rm -f $(module).data $(module).[cho] lib$(module)*.a

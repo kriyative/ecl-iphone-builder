@@ -15,6 +15,7 @@
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		311AE63B104B98E2004D3132 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 311AE63A104B98E2004D3132 /* Icon.png */; };
 		314C844E10448FDE00689028 /* slime in Resources */ = {isa = PBXBuildFile; fileRef = 314C83E310448FDE00689028 /* slime */; };
+		317563F81268D65300CA013A /* ucd.dat in Resources */ = {isa = PBXBuildFile; fileRef = 317563F71268D65300CA013A /* ucd.dat */; };
 		31920CF21041CFDC00EAFB0D /* init.lisp in Resources */ = {isa = PBXBuildFile; fileRef = 31920CF11041CFDC00EAFB0D /* init.lisp */; };
 		31920E451043175D00EAFB0D /* ecl_boot.c in Sources */ = {isa = PBXBuildFile; fileRef = 31920E431043175D00EAFB0D /* ecl_boot.c */; };
 		31AA2765104DF869005DC971 /* libeclffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31AA2764104DF869005DC971 /* libeclffi.a */; };
@@ -43,6 +44,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		311AE63A104B98E2004D3132 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		314C83E310448FDE00689028 /* slime */ = {isa = PBXFileReference; lastKnownFileType = folder; path = slime; sourceTree = "<group>"; };
+		317563F71268D65300CA013A /* ucd.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = ucd.dat; path = "$(ECL_IOS)/device/lib/ecl-10.4.1/ucd.dat"; sourceTree = "<absolute>"; };
 		31920CF11041CFDC00EAFB0D /* init.lisp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = init.lisp; sourceTree = "<group>"; };
 		31920E431043175D00EAFB0D /* ecl_boot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ecl_boot.c; sourceTree = "<group>"; };
 		31920E441043175D00EAFB0D /* ecl_boot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecl_boot.h; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				317563F71268D65300CA013A /* ucd.dat */,
 				311AE63A104B98E2004D3132 /* Icon.png */,
 				314C83E310448FDE00689028 /* slime */,
 				31920CF11041CFDC00EAFB0D /* init.lisp */,
@@ -176,6 +179,7 @@
 				31920CF21041CFDC00EAFB0D /* init.lisp in Resources */,
 				314C844E10448FDE00689028 /* slime in Resources */,
 				311AE63B104B98E2004D3132 /* Icon.png in Resources */,
+				317563F81268D65300CA013A /* ucd.dat in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,11 +238,12 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ECL_IOS = "/opt/ecl-ios";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../iphone/universal/include;
-				LIBRARY_SEARCH_PATHS = ../iphone/universal/lib;
+				HEADER_SEARCH_PATHS = "$(ECL_IOS)/universal/include";
+				LIBRARY_SEARCH_PATHS = "$(ECL_IOS)/universal/lib";
 				OTHER_LDFLAGS = (
 					"-lecl",
 					"-leclgmp",
@@ -259,9 +264,12 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ECL_IOS = "/opt/ecl-ios";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(ECL_IOS)/universal/include";
+				LIBRARY_SEARCH_PATHS = "$(ECL_IOS)/universal/lib";
 				PREBINDING = NO;
 				SDKROOT = iphoneos3.2;
 			};

@@ -2,14 +2,16 @@
 
 (setq *print-case* :downcase)
 
-(defvar *ecl-dir* #p"/opt/iphone/ecl/")
+(defvar *ecl-root* #p"/opt/iphone/ecl/")
 (defvar *default-sdk-ver* "3.0")
 
 (defun compile-if-old (destdir sources &rest options)
   (unless (probe-file destdir)
     (si::mkdir destdir #o0777))
   (mapcar #'(lambda (source)
-	      (let ((object (merge-pathnames destdir (compile-file-pathname source :type :object))))
+	      (let ((object (merge-pathnames
+                             destdir
+                             (compile-file-pathname source :type :object))))
 		(unless (and (probe-file object)
 			     (>= (file-write-date object) (file-write-date source)))
 		  (format t "~&(compile-file ~S :output-file ~S~{ ~S~})~%"
@@ -42,11 +44,19 @@
          (compiler::*cc-flags* (join (list* "-g"
                                             "-x objective-c"
                                             "-D__IPHONE_OS_VERSION_MIN_REQUIRED=30000"
-                                            "-O2 -fPIC -fno-common -D_THREAD_SAFE -Ddarwin -ObjC"
+                                            "-O2 -fPIC -fno-common -D_THREAD_SAFE"
+                                            "-Ddarwin -ObjC"
+                                            "-fobjc-abi-version=2"
+                                            "-fobjc-legacy-dispatch"
                                             (format nil "-isysroot ~a" sysroot)
                                             cflags)
                                      " "))
-         (lisp-files (compile-if-old #p"" source-files :system-p t :c-file t :data-file t :h-file t)))
+         (lisp-files (compile-if-old #p""
+                                     source-files
+                                     :system-p t
+                                     :c-file t
+                                     :data-file t
+                                     :h-file t)))
     (compiler:build-static-library target :lisp-files lisp-files)))
 
 (defun build-simulator (target source-files)
@@ -54,7 +64,7 @@
          (sdk-ver *default-sdk-ver*))
     (build target
            source-files
-           :ecl-include-dir (merge-pathnames "simulator/include/" *ecl-dir*)
+           :ecl-include-dir (merge-pathnames "simulator/include/" *ecl-root*)
            :cflags '("-arch i386")
            :sdk sdk
            :sysroot (format nil "~a/SDKs/iPhoneSimulator~a.sdk" sdk sdk-ver)))
@@ -68,7 +78,7 @@
          (sysroot (format nil "~a/SDKs/iPhoneOS~a.sdk" sdk sdk-ver)))
     (build target
            source-files
-           :ecl-include-dir (merge-pathnames "device/include/" *ecl-dir*)
+           :ecl-include-dir (merge-pathnames "device/include/" *ecl-root*)
            :cflags '("-arch armv6")
            :sdk "/Developer/Platforms/iPhoneOS.platform/Developer"
            :sysroot sysroot))
@@ -77,18 +87,24 @@
     (rename-file (str "lib" target ".a") lib)))
 
 (defun lipo (target &key (sdk "/Developer/Platforms/iPhoneOS.platform/Developer"))
-  (system:system (join (list
-                        (str sdk "/usr/bin/lipo")
-                        "-arch arm"
-                        (str "lib" target "_device.a")
-                        "-arch i386"
-                        (str "lib" target "_simulator.a")
-                        "-create"
-                        "-output" (str "lib" target ".a"))
+  (system:system (join (list (str sdk "/usr/bin/lipo")
+                             "-arch arm"
+                             (str "lib" target "_device.a")
+                             "-arch i386"
+                             (str "lib" target "_simulator.a")
+                             "-create"
+                             "-output" (str "lib" target ".a"))
                        " ")))
 
-(clean "eclffi")
-(build-simulator "eclffi" '("eclffi.lisp"))
-(clean "eclffi")
-(build-device "eclffi" '("eclffi.lisp"))
-(lipo "eclffi")
+(defun build-all (module
+                  sources
+                  &key
+                  (ecl-root *ecl-root*)
+                  (sdk-ver *default-sdk-ver*))
+  (let ((*ecl-root* (pathname ecl-root))
+        (*default-sdk-ver* sdk-ver))
+    (clean module)
+    (build-simulator module sources)
+    (clean module)
+    (build-device module sources)
+    (lipo module)))

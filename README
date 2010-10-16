@@ -9,28 +9,30 @@ directory.
 
   cd /opt/src/ecl-iphone-builder
 
-  # see <http://www.hpl.hp.com/personal/Hans_Boehm/gc/#where> for more details
-  cvs -d:pserver:anonymous@bdwgc.cvs.sourceforge.net:/cvsroot/bdwgc co bdwgc
-  cd bdwgc
-  patch -p0 < ../ecl-gc-patch.txt
-  cd ..
+  wget http://space.dl.sourceforge.net/project/ecls/ecls/10.4/ecl-10.4.1.tar.gz
+  tar xzf ecl-10.4.1.tar.gz
 
-  cvs -d:pserver:anonymous@ecls.cvs.sourceforge.net:/cvsroot/ecls co -r ECL_9_12_3 ecl
-  cd ecl
-  patch -p0 < ../ecl-patch.txt
-  cd src
-  mv gc gc.orig
-  ln -s ../../bdwgc gc
-  cd ..
+[1] Apply the ECL for iOS patches.
 
-Now comes the actual build:
+  cd ecl-10.4.1
+  patch -p0 < ../ecl-ios-patches.txt 
 
-  ../build.sh --install ../iphone
+[2] Building ECL for host, simulator, device, and universal
 
-Get yourself a cup of coffee, while this runs. When it's done, there
-should be an iphone/ sub-directory in the build/directory, with the
-following contents:
+  ECL_IOS=/opt/ecl-ios
+  ../build.sh -t all -d ${ECL_IOS} -v 3.2
 
+  [Note: if you use a different path for ${ECL_IOS}, then you must
+  change the ECL_IOS build var in the eclshell Xcode project]
+
+Get yourself a cup of coffee, while this runs (on a 2.26 GHz Intel
+Core 2 Duo Mac Book Pro with 4GB RAM and 160GB SSD, it takes about 13
+minutes to build everything). When it's done, there should be an
+${ECL_IOS} directory with the following contents:
+
+  host/bin/...
+  host/include/...
+  host/lib/...
   device/bin/...
   device/include/...
   device/lib/...
@@ -46,7 +48,6 @@ following contents:
   
 The universal/lib/lib* contain FAT binaries of the static libraries,
 which makes it easy to configure the Xcode project.
-
 
 eclshell Build Notes
 ~~~~~~~~~~~~~~~~~~~~
@@ -64,15 +65,20 @@ not be required.
   patch -p0 < ../../swank-ecl-patches.txt
   cd ..
 
-Building the eclshell example requires a native ECL build on the host
-OSX system. Configure the path to the ecl directory in the makefile.
+If you specified a different path or SDK version for the ECL build
+than the default, be sure to edit the sdk_ver and ecl_root settings in
+`eclshell/makefile'.
 
   make			# see makefile for configuring ecl path
 
 That should generate a libeclffi.a fat library. Now open
-eclshell.xcodeproj and run a Simulator or Device build. Hopefully it
-will just work, and there will be some noisy output as SLIME loads,
-ending eventually with:
+eclshell.xcodeproj. If you specified a different path for the ECL
+build than the default (in step 2 above), be sure to change the
+ECL_IOS user defined build setting accordingly.
+
+Run a Simulator or Device build. Hopefully it will just work, and
+there will be some noisy output as SLIME loads, ending eventually
+with:
 
 ;; Swank started at port: 4005.
 
