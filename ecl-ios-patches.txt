@@ -4,7 +4,7 @@ RCS file: /cvsroot/ecls/ecl/src/configure,v
 retrieving revision 1.287
 diff -u -r1.287 configure
 --- src/configure	4 Apr 2010 14:27:49 -0000	1.287
-+++ src/configure	20 Apr 2010 04:35:01 -0000
++++ src/configure	17 Oct 2010 09:20:59 -0000
 @@ -4341,14 +4341,14 @@
  $as_echo "$as_me: error: The program ECL is not installed in your system" >&2;}
     { (exit 1); exit 1; }; }
@@ -145,7 +145,7 @@ RCS file: /cvsroot/ecls/ecl/src/c/symbols_list.h,v
 retrieving revision 1.253
 diff -u -r1.253 symbols_list.h
 --- src/c/symbols_list.h	28 Mar 2010 20:25:26 -0000	1.253
-+++ src/c/symbols_list.h	20 Apr 2010 04:35:01 -0000
++++ src/c/symbols_list.h	17 Oct 2010 09:21:01 -0000
 @@ -1175,6 +1175,8 @@
  {SYS_ "SET-SYMBOL-PLIST", SI_ORDINARY, si_set_symbol_plist, 2, OBJNULL},
  #if defined(HAVE_PUTENV) || defined(HAVE_SETENV)
@@ -222,7 +222,7 @@ RCS file: /cvsroot/ecls/ecl/src/c/symbols_list2.h,v
 retrieving revision 1.132
 diff -u -r1.132 symbols_list2.h
 --- src/c/symbols_list2.h	28 Mar 2010 22:03:59 -0000	1.132
-+++ src/c/symbols_list2.h	20 Apr 2010 04:35:01 -0000
++++ src/c/symbols_list2.h	17 Oct 2010 09:21:03 -0000
 @@ -1175,6 +1175,8 @@
  {SYS_ "SET-SYMBOL-PLIST","si_set_symbol_plist"},
  #if defined(HAVE_PUTENV) || defined(HAVE_SETENV)
@@ -293,13 +293,52 @@ diff -u -r1.132 symbols_list2.h
  #endif
  
  {SYS_ "*CURRENT-FORM*",NULL},
+Index: src/c/unixfsys.d
+===================================================================
+RCS file: /cvsroot/ecls/ecl/src/c/unixfsys.d,v
+retrieving revision 1.109
+diff -u -r1.109 unixfsys.d
+--- src/c/unixfsys.d	13 Mar 2010 22:17:44 -0000	1.109
++++ src/c/unixfsys.d	17 Oct 2010 09:21:04 -0000
+@@ -69,7 +69,15 @@
+ {
+ 	int output;
+ 	ecl_disable_interrupts();
++#ifdef IPHONE_SIMULATOR
++#  if IPHONE_SDK_VER > 320
++        output = stat64(path, sb);
++#  else
+ 	output = stat(path, sb);
++#  endif
++#else
++	output = stat(path, sb);
++#endif
+ 	ecl_enable_interrupts();
+ 	return output;
+ }
+@@ -80,7 +88,15 @@
+ {
+ 	int output;
+ 	ecl_disable_interrupts();
++#ifdef IPHONE_SIMULATOR
++#  if IPHONE_SDK_VER > 320
++        output = lstat64(path, sb);
++#  else
+ 	output = lstat(path, sb);
++#  endif
++#else
++	output = lstat(path, sb);
++#endif
+ 	ecl_enable_interrupts();
+ 	return output;
+ }
 Index: src/clos/defclass.lsp
 ===================================================================
 RCS file: /cvsroot/ecls/ecl/src/clos/defclass.lsp,v
 retrieving revision 1.28
 diff -u -r1.28 defclass.lsp
 --- src/clos/defclass.lsp	29 Dec 2008 10:33:12 -0000	1.28
-+++ src/clos/defclass.lsp	20 Apr 2010 04:35:01 -0000
++++ src/clos/defclass.lsp	17 Oct 2010 09:21:04 -0000
 @@ -118,7 +118,7 @@
        (setf (find-class name) new-class))
      new-class))
@@ -315,7 +354,7 @@ RCS file: /cvsroot/ecls/ecl/src/cmp/cmpmain.lsp,v
 retrieving revision 1.180
 diff -u -r1.180 cmpmain.lsp
 --- src/cmp/cmpmain.lsp	19 Mar 2010 18:56:19 -0000	1.180
-+++ src/cmp/cmpmain.lsp	20 Apr 2010 04:35:01 -0000
++++ src/cmp/cmpmain.lsp	17 Oct 2010 09:21:04 -0000
 @@ -331,7 +331,7 @@
  (defun system-ld-flag (library)
    "Given a symbol, try to find a library that matches it, either by looking in the
@@ -331,7 +370,7 @@ RCS file: /cvsroot/ecls/ecl/src/gc/darwin_stop_world.c,v
 retrieving revision 1.10
 diff -u -r1.10 darwin_stop_world.c
 --- src/gc/darwin_stop_world.c	3 Apr 2009 17:26:56 -0000	1.10
-+++ src/gc/darwin_stop_world.c	20 Apr 2010 04:35:02 -0000
++++ src/gc/darwin_stop_world.c	17 Oct 2010 09:21:05 -0000
 @@ -174,6 +174,28 @@
  	  GC_push_one(state . THREAD_FLD (r29));
  	  GC_push_one(state . THREAD_FLD (r30));
@@ -404,7 +443,7 @@ RCS file: /cvsroot/ecls/ecl/src/gc/include/private/gc_priv.h,v
 retrieving revision 1.9
 diff -u -r1.9 gc_priv.h
 --- src/gc/include/private/gc_priv.h	2 Feb 2010 09:07:40 -0000	1.9
-+++ src/gc/include/private/gc_priv.h	20 Apr 2010 04:35:02 -0000
++++ src/gc/include/private/gc_priv.h	17 Oct 2010 09:21:06 -0000
 @@ -401,9 +401,13 @@
  #                 define GC_GETSECTBYNAME getsectbynamefromheader_64
  #               endif
@@ -428,7 +467,7 @@ RCS file: /cvsroot/ecls/ecl/src/gc/include/private/gcconfig.h,v
 retrieving revision 1.12
 diff -u -r1.12 gcconfig.h
 --- src/gc/include/private/gcconfig.h	3 Apr 2009 17:26:56 -0000	1.12
-+++ src/gc/include/private/gcconfig.h	20 Apr 2010 04:35:02 -0000
++++ src/gc/include/private/gcconfig.h	17 Oct 2010 09:21:06 -0000
 @@ -61,10 +61,15 @@
  #    define FREEBSD
  # endif
@@ -547,7 +586,7 @@ RCS file: /cvsroot/ecls/ecl/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/
 retrieving revision 1.1
 diff -u -r1.1 arm.h
 --- src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	3 Apr 2009 17:26:57 -0000	1.1
-+++ src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	20 Apr 2010 04:35:02 -0000
++++ src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	17 Oct 2010 09:21:08 -0000
 @@ -32,10 +32,16 @@
  */
  
@@ -818,7 +857,7 @@ RCS file: /cvsroot/ecls/ecl/src/gmp/mpn/arm/invert_limb.asm,v
 retrieving revision 1.3
 diff -u -r1.3 invert_limb.asm
 --- src/gmp/mpn/arm/invert_limb.asm	20 Jan 2007 12:26:10 -0000	1.3
-+++ src/gmp/mpn/arm/invert_limb.asm	20 Apr 2010 04:35:02 -0000
++++ src/gmp/mpn/arm/invert_limb.asm	17 Oct 2010 09:21:08 -0000
 @@ -6,7 +6,7 @@
  
  dnl  The GNU MP Library is free software; you can redistribute it and/or modify

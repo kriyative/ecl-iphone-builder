@@ -2,14 +2,18 @@ ECL Build Notes
 ~~~~~~~~~~~~~~~
 
 After running git-clone, open a shell in the ecl-iphone-builder
-directory.
+directory. Alternately, you can download this release as a tar.gz
+archive using the following url:
+
+  curl -L -o ecl-iphone-builder.tar.gz http://github.com/kriyative/ecl-iphone-builder/tarball/basilisk
+  tar xzf ecl-iphone-builder.tar.gz
 
 The following script assumes the sources were unpacked in the /opt/src
 directory.
 
   cd /opt/src/ecl-iphone-builder
+  curl -O http://space.dl.sourceforge.net/project/ecls/ecls/10.4/ecl-10.4.1.tar.gz
 
-  wget http://space.dl.sourceforge.net/project/ecls/ecls/10.4/ecl-10.4.1.tar.gz
   tar xzf ecl-10.4.1.tar.gz
 
 [1] Apply the ECL for iOS patches.
@@ -58,7 +62,7 @@ make it into the CVS builds one of these days, and the patch step will
 not be required.
 
   cd ../eclshell
-  wget http://common-lisp.net/project/slime/snapshots/slime-current.tgz
+  curl -O http://common-lisp.net/project/slime/snapshots/slime-current.tgz
   tar xzf slime-current.tgz
   ln -s slime-[0-9]* slime
   cd slime
