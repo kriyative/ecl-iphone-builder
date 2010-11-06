@@ -7,21 +7,17 @@ archive using the following url:
 
   curl -L -o ecl-iphone-builder.tar.gz http://github.com/kriyative/ecl-iphone-builder/tarball/basilisk
   tar xzf ecl-iphone-builder.tar.gz
+  ln -s ecl-iphone-builder-* ecl-iphone-builder
 
-The following script assumes the sources were unpacked in the /opt/src
-directory.
-
-  cd /opt/src/ecl-iphone-builder
   curl -O http://space.dl.sourceforge.net/project/ecls/ecls/10.4/ecl-10.4.1.tar.gz
-
   tar xzf ecl-10.4.1.tar.gz
 
-[1] Apply the ECL for iOS patches.
+1. Apply the ECL for iOS patches
 
   cd ecl-10.4.1
   patch -p0 < ../ecl-ios-patches.txt 
 
-[2] Building ECL for host, simulator, device, and universal
+2. Building ECL for host, simulator, device, and universal
 
   ECL_IOS=/opt/ecl-ios
   ../build.sh -t all -d ${ECL_IOS} -v 3.2
