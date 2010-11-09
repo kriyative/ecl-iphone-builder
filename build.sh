@@ -79,23 +79,51 @@ host()
 
 simulator()
 {
+    mkdir -p build
     export SDK=/Developer/Platforms/iPhoneSimulator.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneSimulator${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/gcc-4.2"
     int_sdk_ver=$(echo "(${iphone_sdk_ver} * 100)/1"|bc)
-    export CFLAGS="-g -arch i386 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE -DIPHONE_SIMULATOR -DIPHONE_SDK_VER=${int_sdk_ver} -mmacosx-version-min=10.5 -fobjc-abi-version=2"
-    export LDFLAGS="-arch i386 -isysroot $SDKROOT -mmacosx-version-min=10.5 -all_load -Xlinker -objc_abi_version -Xlinker 2"
+    export CFLAGS=$(echo -g -arch i386 -I$SDKROOT/usr/include \
+	-fmessage-length=0 \
+	-pipe \
+	-std=c99 \
+	-Wno-trigraphs \
+	-fpascal-strings \
+	-fasm-blocks \
+	-O0 \
+	-Wreturn-type \
+	-Wunused-variable \
+    	-isysroot $SDKROOT \
+	-fexceptions \
+	-fvisibility=hidden \
+	-mmacosx-version-min=10.6 \
+	-gdwarf-2 \
+	-fobjc-abi-version=2 \
+	-D__IPHONE_OS_VERSION_MIN_REQUIRED=30000 \
+	-D_DARWIN_USE_64_BIT_INODE \
+	-DAPPLE -DIPHONE -DIPHONE_SIMULATOR \
+	-DIPHONE_SDK_VER=${int_sdk_ver})
+    export LDFLAGS=$(echo -arch i386 \
+    	-isysroot $SDKROOT -mmacosx-version-min=10.6 \
+	-all_load -Xlinker -objc_abi_version -Xlinker 2)
     # the following two definitions are required to force the
     # simulator config.h to match the device config.h
     export ac_cv_header_ffi_ffi_h="no"
     export dynamic_ffi="no"
     configure $install_root/simulator "${base_config_opts}"
+    mv build/Makefile.new build/Makefile
     {
 	echo "#define HAVE_NATIVE_mpn_add_n 1";
 	echo "#define HAVE_NATIVE_mpn_sub_n 1";
     } >> build/gmp/config.h
+    orig_DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH
+    DYLD_LIBRARY_PATH=$SDKROOT/usr/lib
+    export DYLD_LIBRARY_PATH
     build $install_root/simulator
-    chmod +x $install_root/simulator/lib/ecl*/dpp $install_root/simulator/lib/ecl*/ecl_min
+    DYLD_LIBRARY_PATH=${orig_DYLD_LIBRARY_PATH}
+    chmod +x $install_root/simulator/lib/ecl*/dpp \
+    	$install_root/simulator/lib/ecl*/ecl_min
 }
 
 cross_config()
@@ -153,16 +181,20 @@ ECL_TO_RUN=${ecl_to_run}
 device()
 {
     prefix=$install_root/device
-    ecl_root=$install_root/simulator
+    ecl_root=$install_root/host
     mkdir -p build
     cross_config "$ecl_root/bin/ecl" > build/cross_config
     export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneOS${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/gcc-4.2"
-    export CFLAGS="-g -arch armv6 -I$SDKROOT/usr/include -isysroot $SDKROOT -DAPPLE -DIPHONE"
+    export CFLAGS=$(echo -g -arch armv6 -I$SDKROOT/usr/include \
+    	-isysroot $SDKROOT -DAPPLE -DIPHONE)
     export CPP="$SDK/usr/bin/cpp"
     export LDFLAGS="-arch armv6 -isysroot $SDKROOT"
-    configure $prefix "--host=arm-apple-darwin --target=arm-apple-darwin ${base_config_opts}"
+    configure $prefix \
+    	--host=arm-apple-darwin \
+	--target=arm-apple-darwin \
+	${base_config_opts}
     build $prefix
 }
 
@@ -181,7 +213,9 @@ universal()
     mkdir -p $prefix/universal/lib
     for lib in bytecmp ecl eclgc eclgmp serve-event sockets; do
 	rm -f $prefix/universal/lib/lib${lib}.a
-	lipo $prefix/device/lib/lib${lib}.a $prefix/simulator/lib/lib${lib}.a $prefix/universal/lib/lib${lib}.a
+	lipo $prefix/device/lib/lib${lib}.a \
+	    $prefix/simulator/lib/lib${lib}.a \
+	    $prefix/universal/lib/lib${lib}.a
     done
     (cd $prefix/universal; ln -fs ../device/include .)
 }
@@ -194,7 +228,7 @@ usage()
 {
     echo "Usage: `basename $0` [-d <dir>] [-t <target>] [-c] [-v <sdk-ver>]"
     echo ""
-    echo " dir     -- prefix directory where the ecl libraries will be installed [$install_root]"
+    echo " dir     -- prefix directory where ecl will be installed [$install_root]"
     echo " target  -- one of: host, simulator, device [$target]"
     echo " sdk-ver -- the sdk version to use [$iphone_sdk_ver]"
 }
