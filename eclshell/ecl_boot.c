@@ -25,54 +25,53 @@ extern "C"
 
 void init_ECL_PROGRAM(cl_object cblock)
 {
-  static cl_object Cblock;
-  if (!FIXNUMP(cblock)) {
-    Cblock = cblock;
-    cblock->cblock.data_text = compiler_data_text;
-    cblock->cblock.data_text_size = compiler_data_text_size;
+    static cl_object Cblock;
+    if (!FIXNUMP(cblock)) {
+        Cblock = cblock;
+        cblock->cblock.data_text = compiler_data_text;
+        cblock->cblock.data_text_size = compiler_data_text_size;
 #ifndef ECL_DYNAMIC_VV
-    cblock->cblock.data = VV;
+        cblock->cblock.data = VV;
 #endif
-    cblock->cblock.data_size = VM;
-    return;
-  }
+        cblock->cblock.data_size = VM;
+        return;
+    }
 #if defined(ECL_DYNAMIC_VV) && defined(ECL_SHARED_DATA)
-  VV = Cblock->cblock.data;
+    VV = Cblock->cblock.data;
 #endif
 	
-  {
-	cl_object current, next = Cblock;
-    current = read_VV(OBJNULL, init_lib_SOCKETS); current->cblock.next = next; next = current;
-    current = read_VV(OBJNULL, init_lib_BYTECMP); current->cblock.next = next; next = current;
-    current = read_VV(OBJNULL, init_lib_SERVE_EVENT); current->cblock.next = next; next = current;
-    current = read_VV(OBJNULL, init_lib_ECLFFI); current->cblock.next = next; next = current;
-	// current = read_VV(OBJNULL, init_lib_PROFILE); current->cblock.next = next; next = current; 
+    {
+        cl_object current, next = Cblock;
+        current = read_VV(OBJNULL, init_lib_SOCKETS);
+        current->cblock.next = next; next = current;
+        current = read_VV(OBJNULL, init_lib_BYTECMP);
+        current->cblock.next = next; next = current;
+        current = read_VV(OBJNULL, init_lib_SERVE_EVENT);
+        current->cblock.next = next; next = current;
+        current = read_VV(OBJNULL, init_lib_ECLFFI);
+        current->cblock.next = next; next = current;
+	// current = read_VV(OBJNULL, init_lib_PROFILE);
+        // current->cblock.next = next; next = current; 
 
 	Cblock->cblock.next = current;
-  }
+    }
 }
 
 int ecl_boot(const char *root_dir)
 {
-  char *ecl = "ecl";
-  setenv("ECLDIR", "", 1);
-  cl_boot(1, &ecl);
-  read_VV(OBJNULL, init_ECL_PROGRAM);
-  char tmp[2048];
-  sprintf(tmp, "(setq *default-pathnames-defaults* #p\"%s\")", root_dir);
-  si_safe_eval(3, c_string_to_object(tmp), Cnil, OBJNULL);
-  ecl_toplevel(root_dir);
-#if 0
-  const char *lisp_code = "(SI:TOP-LEVEL)";
-  si_select_package(make_simple_base_string("CL-USER"));
-  cl_object output = si_safe_eval(3, c_string_to_object(lisp_code), Cnil, OBJNULL);
-  cl_shutdown();
-  if (FIXNUMP(output))
-    return fix(output);
-  if (Null(output) || (output == OBJNULL))
-    return 1;
-#endif
-  return 0;
+    int argc = 1;
+    char *argv[256];
+    argv[0] = "ecl";
+    GC_register_my_thread(argv);
+    GC_stackbottom = (void*)(argv+255);
+    setenv("ECLDIR", "", 1);
+    cl_boot(argc, argv);
+    read_VV(OBJNULL, init_ECL_PROGRAM);
+    char tmp[2048];
+    sprintf(tmp, "(setq *default-pathnames-defaults* #p\"%s\")", root_dir);
+    si_safe_eval(3, c_string_to_object(tmp), Cnil, OBJNULL);
+    ecl_toplevel(root_dir);
+    return 0;
 }
 
 void ecl_toplevel(const char *home)
