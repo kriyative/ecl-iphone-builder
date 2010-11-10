@@ -94,7 +94,7 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
  "SLIME-listener"
  (lambda ()
    (cond
-     ((string-equal (safe-substr (machine-type) 0 6) "iPhone")
+     ((string-equal (safe-substr (machine-type) 0 2) "iP")
       (let ((swank::*loopback-interface* (get-ip-address-string)))
         (swank:create-server :port 4005 :dont-close t)
         (eclffi:set-text *label*
@@ -120,7 +120,7 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 #+test
 (progn
   (eclffi:set-text *label* (format nil "1 2 3"))
-
+  (eclffi:set-frame (eclffi:KEY-WINDOW) '(0 0 768 1024))
   (eclffi:with-autorelease-pool ()
     (eclffi:set-text *label* "hello lisp")
     (eclffi:redraw *label*))
