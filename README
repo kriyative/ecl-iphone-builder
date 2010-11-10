@@ -5,7 +5,7 @@ After running git-clone, open a shell in the ecl-iphone-builder
 directory. Alternately, you can download this release as a tar.gz
 archive using the following url:
 
-  curl -L -o ecl-iphone-builder.tar.gz http://github.com/kriyative/ecl-iphone-builder/tarball/basilisk
+  curl -L -o ecl-iphone-builder.tar.gz http://github.com/kriyative/ecl-iphone-builder/tarball/centaur
   tar xzf ecl-iphone-builder.tar.gz
 
 The following script assumes the sources were unpacked in the /opt/src
