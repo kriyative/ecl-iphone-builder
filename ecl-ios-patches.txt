@@ -293,45 +293,6 @@ diff -u -r1.132 symbols_list2.h
  #endif
  
  {SYS_ "*CURRENT-FORM*",NULL},
-Index: src/c/unixfsys.d
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/c/unixfsys.d,v
-retrieving revision 1.109
-diff -u -r1.109 unixfsys.d
---- src/c/unixfsys.d	13 Mar 2010 22:17:44 -0000	1.109
-+++ src/c/unixfsys.d	17 Oct 2010 09:21:04 -0000
-@@ -69,7 +69,15 @@
- {
- 	int output;
- 	ecl_disable_interrupts();
-+#ifdef IPHONE_SIMULATOR
-+#  if IPHONE_SDK_VER > 320
-+        output = stat64(path, sb);
-+#  else
- 	output = stat(path, sb);
-+#  endif
-+#else
-+	output = stat(path, sb);
-+#endif
- 	ecl_enable_interrupts();
- 	return output;
- }
-@@ -80,7 +88,15 @@
- {
- 	int output;
- 	ecl_disable_interrupts();
-+#ifdef IPHONE_SIMULATOR
-+#  if IPHONE_SDK_VER > 320
-+        output = lstat64(path, sb);
-+#  else
- 	output = lstat(path, sb);
-+#  endif
-+#else
-+	output = lstat(path, sb);
-+#endif
- 	ecl_enable_interrupts();
- 	return output;
- }
 Index: src/clos/defclass.lsp
 ===================================================================
 RCS file: /cvsroot/ecls/ecl/src/clos/defclass.lsp,v
