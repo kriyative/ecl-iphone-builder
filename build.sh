@@ -75,6 +75,8 @@ host()
     export CFLAGS="-g"
     configure $install_root/host "${host_config_opts}"
     build $install_root/host
+    chmod +x $install_root/host/lib/ecl*/dpp \
+    	$install_root/host/lib/ecl*/ecl_min
 }
 
 simulator()
@@ -191,10 +193,7 @@ device()
     	-isysroot $SDKROOT -DAPPLE -DIPHONE)
     export CPP="$SDK/usr/bin/cpp"
     export LDFLAGS="-arch armv6 -isysroot $SDKROOT"
-    configure $prefix \
-    	--host=arm-apple-darwin \
-	--target=arm-apple-darwin \
-	${base_config_opts}
+    configure $prefix "${base_config_opts} --host=arm-apple-darwin"
     build $prefix
 }
 
