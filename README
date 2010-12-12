@@ -24,7 +24,7 @@ directory.
 [2] Building ECL for host, simulator, device, and universal
 
   ECL_IOS=/opt/ecl-ios
-  ../build.sh -t all -d ${ECL_IOS} -v 3.2
+  ../build.sh -t all -d ${ECL_IOS} -v 4.2
 
   [Note: if you use a different path for ${ECL_IOS}, then you must
   change the ECL_IOS build var in the eclshell Xcode project]
