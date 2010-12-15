@@ -62,9 +62,7 @@ make it into the CVS builds one of these days, and the patch step will
 not be required.
 
   cd ../eclshell
-  curl -O http://common-lisp.net/project/slime/snapshots/slime-current.tgz
-  tar xzf slime-current.tgz
-  ln -s slime-[0-9]* slime
+  cvs -d :pserver:anonymous:anonymous@common-lisp.net:/project/slime/cvsroot co -D'2010-01-29' slime
   cd slime
   patch -p0 < ../../swank-ecl-patches.txt
   cd ..
