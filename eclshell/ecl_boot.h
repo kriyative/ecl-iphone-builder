@@ -3,6 +3,9 @@
 
 int ecl_boot(const char *root_dir);
 void ecl_toplevel(const char *home);
-void eclshell_show(char *message);
+
+void add_cb(cl_object fun);
+void remove_cb(cl_object fun);
+#define register_cb(h, val) remove_cb(h); h = val; add_cb(h);
 
 #endif

@@ -57,6 +57,42 @@ void init_ECL_PROGRAM(cl_object cblock)
     }
 }
 
+void ecl_toplevel(const char *home)
+{
+    char tmp[512];
+    sprintf(tmp, "(load \"%s/%s\")", home, "init.lisp");
+    si_safe_eval(3, c_string_to_object(tmp), Cnil, OBJNULL);
+}
+
+cl_object ecl_callbacks = Cnil;
+cl_object Xecl_callbacksX = Cnil;
+static void init_callbacks_registry()
+{
+  int internp;
+  Xecl_callbacksX = ecl_intern(make_simple_base_string("*ECL-CALLBACKS*"),
+                               ecl_find_package_nolock(ecl_make_keyword("SI")),
+                               &internp);
+  ecl_defvar(Xecl_callbacksX, ecl_callbacks);
+  ecl_register_root(&ecl_callbacks);
+}
+
+void add_cb(cl_object fun)
+{
+    if (Cnil != fun && FALSE == ecl_member_eq(fun, ecl_callbacks)) {
+        ecl_callbacks = ecl_cons(fun, ecl_callbacks);
+        cl_set(Xecl_callbacksX, ecl_callbacks);
+    }
+}
+
+void remove_cb(cl_object fun)
+{
+    if (Cnil == fun) return;
+    if (ecl_member_eq(fun, ecl_callbacks)) {
+        ecl_callbacks = ecl_remove_eq(fun, ecl_callbacks);
+        cl_set(Xecl_callbacksX, ecl_callbacks);
+    }
+}
+
 int ecl_boot(const char *root_dir)
 {
     int argc = 1;
@@ -70,13 +106,7 @@ int ecl_boot(const char *root_dir)
     char tmp[2048];
     sprintf(tmp, "(setq *default-pathnames-defaults* #p\"%s\")", root_dir);
     si_safe_eval(3, c_string_to_object(tmp), Cnil, OBJNULL);
+    init_callbacks_registry();
     ecl_toplevel(root_dir);
     return 0;
-}
-
-void ecl_toplevel(const char *home)
-{
-    char tmp[512];
-    sprintf(tmp, "(load \"%s/%s\")", home, "init.lisp");
-    si_safe_eval(3, c_string_to_object(tmp), Cnil, OBJNULL);
 }

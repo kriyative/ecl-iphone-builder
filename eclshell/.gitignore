@@ -5,4 +5,7 @@
 /eclffi.c
 /eclffi.data
 /eclffi.h
+/util.c
+/util.data
+/util.h
 build

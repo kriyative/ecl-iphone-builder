@@ -1,13 +1,25 @@
 (in-package :cl-user)
+(use-package 'eclffi)
 
 (defvar *label* nil)
 
-(eclffi:with-autorelease-pool ()
-  (setq *label* (eclffi:make-label ""))
-  (eclffi:set-text *label* "loading ...")
-  (eclffi:add-subview (eclffi:key-window) *label*)
-  (eclffi:set-frame *label* '(10.0 50.0 300.0 35.0))
-  (eclffi:redraw *label*))
+(setq *label* (make-label ""))
+(set-text *label* "loading ...")
+(redraw *label*)
+(add-subview (key-window) *label*)
+(set-frame *label* '(10.0 50.0 300.0 35.0))
+
+(let ((n 0))
+  (add-subview (key-window)
+               (make-button :frame '(140 230 40 20)
+                            :title "click"
+                            :background-color (color-argb 1 0.5 0.5 0.5)
+                            :on-click (lambda (button)
+                                        (declare (ignore button))
+                                        (set-text *label*
+                                                  (format nil
+                                                          "~d click~:p"
+                                                          (incf n)))))))
 
 (setq *print-case* :downcase)           ; I like lowercase better
 (let ((home (translate-logical-pathname "home:")))
@@ -93,35 +105,15 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 (mp:process-run-function
  "SLIME-listener"
  (lambda ()
-   (cond
-     ((string-equal (safe-substr (machine-type) 0 2) "iP")
-      (let ((swank::*loopback-interface* (get-ip-address-string)))
+   (with-autorelease-pool ()
+     (cond
+       ((string-equal (safe-substr (machine-type) 0 2) "iP")
+        (let ((swank::*loopback-interface* (get-ip-address-string)))
+          (swank:create-server :port 4005 :dont-close t)
+          (set-text *label*
+                    (format nil "slime: ~a:~a~%"
+                            swank::*loopback-interface* 4005))))
+       (t
         (swank:create-server :port 4005 :dont-close t)
-        (eclffi:set-text *label*
-                         (format nil "slime: ~a:~a~%"
-                                 swank::*loopback-interface* 4005))))
-     (t
-      (swank:create-server :port 4005 :dont-close t)
-      (eclffi:set-text *label*
-                       (format nil "slime: ~a:~a~%" "127.0.0.1" 4005))))))
-
-;; A silly test to randomly move the label around
-#+test
-(eclffi:with-autorelease-pool ()
-  (let ((x 160) (y 240))
-    (dotimes (i 1000)
-      (if (> (random 4) 2)
-          (setq x (max 10 (funcall (if (> (random 10) 5) '+ '-) x (random 8))))
-          (setq y (max 10 (funcall (if (> (random 10) 5) '+ '-) y (random 8)))))
-      (eclffi:set-frame *label* (list x y 160.0 25.0))
-      (eclffi:set-text *label* (format nil "~d,~d" x y))
-      (eclffi:redraw *label*))))
-
-#+test
-(progn
-  (eclffi:set-text *label* (format nil "1 2 3"))
-  (eclffi:set-frame (eclffi:KEY-WINDOW) '(0 0 768 1024))
-  (eclffi:with-autorelease-pool ()
-    (eclffi:set-text *label* "hello lisp")
-    (eclffi:redraw *label*))
-  )
+        (set-text *label*
+                  (format nil "slime: ~a:~a~%" "127.0.0.1" 4005)))))))

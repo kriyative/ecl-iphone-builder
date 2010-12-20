@@ -20,37 +20,33 @@
 		object))
 	  sources))
 
-(defun str (&rest args)
-  (with-output-to-string (*standard-output*)
-    (dolist (s args) (princ s))))
-
-(defun join (seq sep)
-  "Concatenate the strings in `seq' delimited by the separator `sep'."
-  (format nil (concatenate 'string "~{~a~^" sep "~}") seq))
-
 (defun safe-delete-file (f)
   (ignore-errors (delete-file f)))
 
-(defun clean (target)
-  (dolist (f (list (str target ".c")
-                   (str target ".h")
-                   (str target ".o")
-                   (str "lib" target ".a")))
-    (safe-delete-file f)))
+(defun clean (sources)
+  (dolist (source sources)
+    (let ((source (pathname source)))
+      (dolist (f (mapcar (lambda (x) (make-pathname :type x :defaults source))
+                         '("c" "h" "o" "data")))
+        (format t "~&;; deleting ~a" f)
+        (safe-delete-file f))
+      (let ((f (make-pathname :name (util:str "lib" (pathname-name source)) :type "a")))
+        (format t "~&;; deleting ~a" f)
+        (safe-delete-file f)))))
 
 (defun build (target source-files &key ecl-include-dir cflags sdk sysroot)
   (let* ((compiler::*ecl-include-directory* ecl-include-dir)
          (compiler::*cc* (format nil "~a/usr/bin/gcc-4.2" sdk))
-         (compiler::*cc-flags* (join (list* "-g"
-                                            "-x objective-c"
-                                            "-D__IPHONE_OS_VERSION_MIN_REQUIRED=30000"
-                                            "-O2 -fPIC -fno-common -D_THREAD_SAFE"
-                                            "-Ddarwin -ObjC"
-                                            "-fobjc-abi-version=2"
-                                            "-fobjc-legacy-dispatch"
-                                            (format nil "-isysroot ~a" sysroot)
-                                            cflags)
-                                     " "))
+         (compiler::*cc-flags* (util:join (list* "-g"
+                                                 "-x objective-c"
+                                                 "-D__IPHONE_OS_VERSION_MIN_REQUIRED=30000"
+                                                 "-O2 -fPIC -fno-common -D_THREAD_SAFE"
+                                                 "-Ddarwin -ObjC"
+                                                 "-fobjc-abi-version=2"
+                                                 "-fobjc-legacy-dispatch"
+                                                 (format nil "-isysroot ~a" sysroot)
+                                                 cflags)
+                                          " "))
          (lisp-files (compile-if-old #p""
                                      source-files
                                      :system-p t
@@ -68,9 +64,9 @@
            :cflags '("-arch i386")
            :sdk sdk
            :sysroot (format nil "~a/SDKs/iPhoneSimulator~a.sdk" sdk sdk-ver)))
-  (let ((lib (str "lib" target "_simulator.a")))
+  (let ((lib (util:str "lib" target "_simulator.a")))
     (safe-delete-file lib)
-    (rename-file (str "lib" target ".a") lib)))
+    (rename-file (util:str "lib" target ".a") lib)))
 
 (defun build-device (target source-files)
   (let* ((sdk "/Developer/Platforms/iPhoneOS.platform/Developer")
@@ -82,19 +78,19 @@
            :cflags '("-arch armv6")
            :sdk "/Developer/Platforms/iPhoneOS.platform/Developer"
            :sysroot sysroot))
-  (let ((lib (str "lib" target "_device.a")))
+  (let ((lib (util:str "lib" target "_device.a")))
     (safe-delete-file lib)
-    (rename-file (str "lib" target ".a") lib)))
+    (rename-file (util:str "lib" target ".a") lib)))
 
 (defun lipo (target &key (sdk "/Developer/Platforms/iPhoneOS.platform/Developer"))
-  (system:system (join (list (str sdk "/usr/bin/lipo")
-                             "-arch arm"
-                             (str "lib" target "_device.a")
-                             "-arch i386"
-                             (str "lib" target "_simulator.a")
-                             "-create"
-                             "-output" (str "lib" target ".a"))
-                       " ")))
+  (system:system (util:join (list (util:str sdk "/usr/bin/lipo")
+                                  "-arch arm"
+                                  (util:str "lib" target "_device.a")
+                                  "-arch i386"
+                                  (util:str "lib" target "_simulator.a")
+                                  "-create"
+                                  "-output" (util:str "lib" target ".a"))
+                            " ")))
 
 (defun build-all (module
                   sources
@@ -103,8 +99,8 @@
                   (sdk-ver *default-sdk-ver*))
   (let ((*ecl-root* (pathname ecl-root))
         (*default-sdk-ver* sdk-ver))
-    (clean module)
+    (clean sources)
     (build-simulator module sources)
-    (clean module)
+    (clean sources)
     (build-device module sources)
     (lipo module)))
