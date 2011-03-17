@@ -120,7 +120,7 @@ simulator()
 	echo "#define HAVE_NATIVE_mpn_sub_n 1";
     } >> build/gmp/config.h
     orig_DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH
-    DYLD_LIBRARY_PATH=$SDKROOT/usr/lib
+    DYLD_LIBRARY_PATH=$SDKROOT/usr/lib:$SDKROOT/usr/lib/system
     export DYLD_LIBRARY_PATH
     build $install_root/simulator
     DYLD_LIBRARY_PATH=${orig_DYLD_LIBRARY_PATH}
