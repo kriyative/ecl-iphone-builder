@@ -64,9 +64,12 @@
      [pool release];"))
 
 (defun make-NSString (string)
-  (c-fficall ((string :cstring))
-      :pointer-void
-    "[NSString stringWithCString: #0]" :one-liner t))
+  (if string
+    (c-fficall ((string :cstring))
+       :pointer-void
+      "[NSString stringWithCString: #0]" :one-liner t)
+    (c-fficall () :pointer-void
+     "nil" :one-liner t)))
 
 (defun alloc (class-name &key init)
   (let ((obj (c-fficall ((class-name :cstring))
