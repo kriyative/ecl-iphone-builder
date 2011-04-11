@@ -273,3 +273,20 @@
     (set-text-color view (or text-color (color-argb 1 0 0 0)))
     (when number-of-lines (set-number-of-lines view number-of-lines))
     view))
+
+(defun show-simple-alert (title &key message (dismiss-label "OK"))
+  "Displays a simple alert to notify the user"
+  (check-type title string)
+  (check-type dismiss-label string)
+  (c-fficall (((make-NSString title) :pointer-void)
+              ((make-NSString message) :pointer-void)
+              ((make-NSString dismiss-label) :pointer-void)) :void
+    "{UIAlertView *alert = [[UIAlertView alloc] 
+      initWithTitle: #0
+      message: #1
+      delegate: nil
+      cancelButtonTitle: #2
+      otherButtonTitles: nil];
+     [alert show];
+     [alert release];}"))
+
