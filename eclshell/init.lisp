@@ -109,7 +109,7 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
      (flet ((notify-user (address port)
               (set-text *label*
                         (format nil "slime: ~a:~a~%"
-                                swank::*loopback-interface* 4005))
+                                address port))
               (eclffi::show-simple-alert "Swank Ready" 
                :message (format nil "Connect to ~a:~a from MCLIDE or Emacs SLIME." 
                                 address port))))
