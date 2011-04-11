@@ -106,14 +106,19 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
  "SLIME-listener"
  (lambda ()
    (with-autorelease-pool ()
-     (cond
-       ((string-equal (safe-substr (machine-type) 0 2) "iP")
-        (let ((swank::*loopback-interface* (get-ip-address-string)))
-          (swank:create-server :port 4005 :dont-close t)
-          (set-text *label*
-                    (format nil "slime: ~a:~a~%"
-                            swank::*loopback-interface* 4005))))
-       (t
-        (swank:create-server :port 4005 :dont-close t)
-        (set-text *label*
-                  (format nil "slime: ~a:~a~%" "127.0.0.1" 4005)))))))
+     (flet ((notify-user (address port)
+              (set-text *label*
+                        (format nil "slime: ~a:~a~%"
+                                swank::*loopback-interface* 4005))
+              (eclffi::show-simple-alert "Swank Ready" 
+               :message (format nil "Connect to ~a:~a from MCLIDE or Emacs SLIME." 
+                                address port))))
+       (cond
+        ((string-equal (safe-substr (machine-type) 0 2) "iP")
+         (let ((swank::*loopback-interface* (get-ip-address-string)))
+           (swank:create-server :port 4005 :dont-close t)
+           (notify-user swank::*loopback-interface* 4005)))
+        (t
+         (swank:create-server :port 4005 :dont-close t)
+         (notify-user "127.0.0.1" 4005)))))))
+       
