@@ -24,7 +24,7 @@
    :set-text
    :set-text-color
    :set-title
-   :set-title-color
+   :set-title-color   :show-simple-alert
    :system-font
    :with-autorelease-pool))
 

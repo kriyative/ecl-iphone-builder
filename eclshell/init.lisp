@@ -110,7 +110,7 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
               (set-text *label*
                         (format nil "slime: ~a:~a~%"
                                 address port))
-              (eclffi::show-simple-alert "Swank Ready" 
+              (eclffi:show-simple-alert "Swank Ready" 
                :message (format nil "Connect to ~a:~a from MCLIDE or Emacs SLIME." 
                                 address port))))
        (cond
