@@ -69,8 +69,12 @@ than the default, be sure to edit the sdk_ver and ecl_root settings in
 
   make			# see makefile for configuring ecl path
 
-That should generate a libeclffi.a fat library. Now open
-eclshell.xcodeproj. If you specified a different path for the ECL
+That should generate a libeclffi.a fat library. Now fire up the project
+in Xcode:
+
+  open -a xcode eclshell.xcodeproj 
+
+If you specified a different path for the ECL
 build than the default (in step 2 above), be sure to change the
 ECL_IOS user defined build setting accordingly.
 
