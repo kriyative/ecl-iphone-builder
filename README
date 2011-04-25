@@ -1,7 +1,8 @@
 ECL Build Notes
 ~~~~~~~~~~~~~~~
 
-Use git-clone, then open a shell in the ecl-iphone-builder directory. Alternatively, download the release as a tar.gz archive:
+Use git-clone, then open a shell in the ecl-iphone-builder directory.
+Alternatively, download the release as a tar.gz archive:
 
   curl -L -o ecl-iphone-builder.tar.gz http://github.com/kriyative/ecl-iphone-builder/tarball/centaur
   tar xzf ecl-iphone-builder.tar.gz
