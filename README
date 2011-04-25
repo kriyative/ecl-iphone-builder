@@ -57,10 +57,11 @@ Download and setup a SLIME source directory:
 
   cd ../eclshell
   cvs -d :pserver:anonymous:anonymous@common-lisp.net:/project/slime/cvsroot co -D'2010-01-29' slime
+
+The swank-ecl-patches.txt has been submitted to the SLIME maintainers, and hopefully it will make it into 
+the CVS builds one of these days, and this patch step will not be required:
+
   cd slime
-
-The swank-ecl-patches.txt has been submitted to the SLIME maintainers, and hopefully it will make it into the CVS builds one of these days, and this patch step will not be required:
-
   patch -p0 < ../../swank-ecl-patches.txt
   cd ..
 
