@@ -24,7 +24,7 @@
    :set-text
    :set-text-color
    :set-title
-   :set-title-color   :show-simple-alert
+   :set-title-color
    :system-font
    :with-autorelease-pool))
 
@@ -272,21 +272,21 @@
     (set-font view (or font (system-font 24.0)))
     (set-text-color view (or text-color (color-argb 1 0 0 0)))
     (when number-of-lines (set-number-of-lines view number-of-lines))
-    view))
+    view));;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; COCOA(defpackage :cocoa  (:export    :show-alert))
 
-(defun show-simple-alert (title &key message (dismiss-label "OK"))
+(defun cocoa::show-alert (title &key message (dismiss-label "OK"))
   "Displays a simple alert to notify the user"
   (check-type title string)
-  (check-type dismiss-label string)
-  (c-fficall (((make-NSString title) :pointer-void)
-              ((make-NSString message) :pointer-void)
-              ((make-NSString dismiss-label) :pointer-void)) :void
-    "{UIAlertView *alert = [[UIAlertView alloc] 
+  (check-type dismiss-label string)  (flet ((ui-alert-view ()
+           (c-fficall (((make-NSString title) :pointer-void)
+                       ((make-NSString message) :pointer-void)
+                       ((make-NSString dismiss-label) :pointer-void)) :void
+      "{UIAlertView *alert = [[UIAlertView alloc] 
       initWithTitle: #0
       message: #1
       delegate: nil
       cancelButtonTitle: #2
       otherButtonTitles: nil];
      [alert show];
-     [alert release];}"))
+     [alert release];}")))  (mp:process-run-function "alert" #'ui-alert-view)))      
 
