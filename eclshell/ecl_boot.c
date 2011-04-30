@@ -98,7 +98,8 @@ int ecl_boot(const char *root_dir)
     int argc = 1;
     char *argv[256];
     argv[0] = "ecl";
-    GC_register_my_thread(argv);
+    struct GC_stack_base base; 
+    int result = GC_register_my_thread(&base);
     GC_stackbottom = (void*)(argv+255);
     setenv("ECLDIR", "", 1);
     cl_boot(argc, argv);
