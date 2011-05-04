@@ -95,15 +95,19 @@ void remove_cb(cl_object fun)
 
 int ecl_boot(const char *root_dir)
 {
+    struct GC_stack_base base; 
+    char tmp[2048];
     int argc = 1;
     char *argv[256];
     argv[0] = "ecl";
-    GC_register_my_thread(argv);
-    GC_stackbottom = (void*)(argv+255);
+    argv[1] = 0;
+    GC_stackbottom = (char *) (argv + 255);
+    base.mem_base = GC_stackbottom;
+    GC_register_my_thread(&base);
     setenv("ECLDIR", "", 1);
+    ecl_set_option(ECL_OPT_HEAP_SIZE, 128*1024*1024);
     cl_boot(argc, argv);
     read_VV(OBJNULL, init_ECL_PROGRAM);
-    char tmp[2048];
     sprintf(tmp, "(setq *default-pathnames-defaults* #p\"%s\")", root_dir);
     si_safe_eval(3, c_string_to_object(tmp), Cnil, OBJNULL);
     init_callbacks_registry();

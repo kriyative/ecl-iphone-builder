@@ -42,6 +42,8 @@ base_config_opts="\
 	--with-tcp=builtin \
 	--with-x=no \
 	--with-dffi=no"
+CC_bin=gcc-4.2
+LD_bin=gcc-4.2
 
 configure()
 {
@@ -72,7 +74,9 @@ distclean()
 
 host()
 {
+    export CC="$SDK/usr/bin/$CC_bin"
     export CFLAGS="-g"
+    export LD="$SDK/usr/bin/$LD_bin"
     configure $install_root/host "${host_config_opts}"
     build $install_root/host
     chmod +x $install_root/host/lib/ecl*/dpp \
@@ -84,7 +88,7 @@ simulator()
     mkdir -p build
     export SDK=/Developer/Platforms/iPhoneSimulator.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneSimulator${iphone_sdk_ver}.sdk
-    export CC="$SDK/usr/bin/gcc-4.2"
+    export CC="$SDK/usr/bin/$CC_bin"
     int_sdk_ver=$(echo "(${iphone_sdk_ver} * 100)/1"|bc)
     export CFLAGS=$(echo -g -arch i386 -I$SDKROOT/usr/include \
 	-fmessage-length=0 \
@@ -106,6 +110,7 @@ simulator()
 	-D_DARWIN_USE_64_BIT_INODE \
 	-DAPPLE -DIPHONE -DIPHONE_SIMULATOR \
 	-DIPHONE_SDK_VER=${int_sdk_ver})
+    export LD="$SDK/usr/bin/$LD_bin"
     export LDFLAGS=$(echo -arch i386 \
     	-isysroot $SDKROOT -mmacosx-version-min=10.6 \
 	-all_load -Xlinker -objc_abi_version -Xlinker 2)
@@ -182,28 +187,31 @@ ECL_TO_RUN=${ecl_to_run}
 
 device()
 {
-    prefix=$install_root/device
+    arch=$1
+    prefix=$install_root/${arch}
     ecl_root=$install_root/host
     mkdir -p build
     cross_config "$ecl_root/bin/ecl" > build/cross_config
     export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneOS${iphone_sdk_ver}.sdk
-    export CC="$SDK/usr/bin/gcc-4.2"
-    export CFLAGS=$(echo -g -arch armv6 -I$SDKROOT/usr/include \
+    export CC="$SDK/usr/bin/$CC_bin"
+    export CFLAGS=$(echo -g -arch ${arch} -I$SDKROOT/usr/include \
     	-isysroot $SDKROOT -DAPPLE -DIPHONE)
     export CPP="$SDK/usr/bin/cpp"
-    export LDFLAGS="-arch armv6 -isysroot $SDKROOT"
+    export LD="$SDK/usr/bin/$LD_bin"
+    export LDFLAGS="-arch ${arch} -isysroot $SDKROOT"
     configure $prefix "${base_config_opts} --host=arm-apple-darwin"
     build $prefix
 }
 
 lipo()
 {
-    armlib=$1
-    i386lib=$2
-    lipolib=$3
+    arm6lib=$1
+    arm7lib=$2
+    i386lib=$3
+    lipolib=$4
     export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
-    $SDK/usr/bin/lipo -arch arm $armlib -arch i386 $i386lib -create -output $lipolib
+    $SDK/usr/bin/lipo -arch armv6 $arm6lib -arch armv7 $arm7lib -arch i386 $i386lib -create -output $lipolib
 }
 
 universal()
@@ -212,15 +220,17 @@ universal()
     mkdir -p $prefix/universal/lib
     for lib in bytecmp ecl eclgc eclgmp serve-event sockets; do
 	rm -f $prefix/universal/lib/lib${lib}.a
-	lipo $prefix/device/lib/lib${lib}.a \
+	lipo \
+	    $prefix/armv6/lib/lib${lib}.a \
+	    $prefix/armv7/lib/lib${lib}.a \
 	    $prefix/simulator/lib/lib${lib}.a \
 	    $prefix/universal/lib/lib${lib}.a
     done
-    (cd $prefix/universal; ln -fs ../device/include .)
+    (cd $prefix/universal; ln -fs ../armv6/include .)
 }
 
 target=simulator
-iphone_sdk_ver=3.2
+iphone_sdk_ver=4.3
 clean=no
 
 usage()
@@ -232,8 +242,9 @@ usage()
     echo " sdk-ver -- the sdk version to use [$iphone_sdk_ver]"
 }
 
-while getopts 'd:v:t:c' o; do
+while getopts 'a:d:v:t:c' o; do
 case "$o" in
+    a) arch="$OPTARG";;
     d) install_root="$OPTARG";;
     v) iphone_sdk_ver="$OPTARG";;
     t) target="$OPTARG";;
@@ -247,7 +258,14 @@ echo "Installing in $install_root"
 [ -d $install_root ] || mkdir -p $install_root
 
 case "$target" in
-    host|simulator|device|universal)
+    device)
+	if [ "$clean" = "yes" ]; then distclean; fi;
+	if [ "" = "${arch}" ]; then
+	    echo "Please specify CPU architecture (armv6, armv7)."
+	    exit 1
+	fi
+	device $arch;;
+    host|simulator|universal)
 	if [ "$clean" = "yes" ]; then distclean; fi;
 	$target;;
     all)
@@ -256,7 +274,9 @@ case "$target" in
 	distclean;
 	simulator || exit 1;
 	distclean;
-	device || exit 1;
+	device armv6 || exit 1;
+	distclean;
+	device armv7 || exit 1;
 	universal;;
     *)
 	echo "Unknown target $target";

@@ -68,28 +68,31 @@
     (safe-delete-file lib)
     (rename-file (util:str "lib" target ".a") lib)))
 
-(defun build-device (target source-files)
+(defun build-device (target source-files &key (arch "armv6"))
   (let* ((sdk "/Developer/Platforms/iPhoneOS.platform/Developer")
          (sdk-ver *default-sdk-ver*)
          (sysroot (format nil "~a/SDKs/iPhoneOS~a.sdk" sdk sdk-ver)))
     (build target
            source-files
-           :ecl-include-dir (merge-pathnames "device/include/" *ecl-root*)
-           :cflags '("-arch armv6")
+           :ecl-include-dir (merge-pathnames (util:str arch "/include/") *ecl-root*)
+           :cflags (list (util:str "-arch " arch))
            :sdk "/Developer/Platforms/iPhoneOS.platform/Developer"
            :sysroot sysroot))
-  (let ((lib (util:str "lib" target "_device.a")))
+  (let ((lib (util:str "lib" target "_" arch ".a")))
     (safe-delete-file lib)
     (rename-file (util:str "lib" target ".a") lib)))
 
 (defun lipo (target &key (sdk "/Developer/Platforms/iPhoneOS.platform/Developer"))
-  (system:system (util:join (list (util:str sdk "/usr/bin/lipo")
-                                  "-arch arm"
-                                  (util:str "lib" target "_device.a")
-                                  "-arch i386"
-                                  (util:str "lib" target "_simulator.a")
-                                  "-create"
-                                  "-output" (util:str "lib" target ".a"))
+  (system:system (util:join (list
+                             (util:str sdk "/usr/bin/lipo")
+                             "-arch armv6"
+                             (util:str "lib" target "_armv6.a")
+                             "-arch armv7"
+                             (util:str "lib" target "_armv7.a")
+                             "-arch i386"
+                             (util:str "lib" target "_simulator.a")
+                             "-create"
+                             "-output" (util:str "lib" target ".a"))
                             " ")))
 
 (defun build-all (module
@@ -100,7 +103,10 @@
   (let ((*ecl-root* (pathname ecl-root))
         (*default-sdk-ver* sdk-ver))
     (clean sources)
-    (build-simulator module sources)
+    (build-device module sources :arch "armv6")
     (clean sources)
-    (build-device module sources)
+    (build-device module sources :arch "armv7")
+    (let ((*features* (cons :iphone-simulator *features*)))
+      (clean sources)
+      (build-simulator module sources))
     (lipo module)))
