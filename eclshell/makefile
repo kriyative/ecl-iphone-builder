@@ -1,6 +1,6 @@
 # ecl_root -- dir where the host-system's native ECL is installed,
 # including `cmp' module
-sdk_ver = 4.2
+sdk_ver = 4.3
 ecl_root = /opt/ecl-ios
 host_ecl = $(ecl_root)/host
 
