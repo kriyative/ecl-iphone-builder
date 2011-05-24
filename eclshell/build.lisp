@@ -35,7 +35,7 @@
         (safe-delete-file f)))))
 
 (defun build (target source-files &key ecl-include-dir cflags sdk sysroot)
-  (let* ((compiler::*ecl-include-directory* ecl-include-dir)
+  (let* ((compiler::*ecl-include-directory* (namestring ecl-include-dir))
          (compiler::*cc* (format nil "~a/usr/bin/gcc-4.2" sdk))
          (compiler::*cc-flags* (util:join (list* "-g"
                                                  "-x objective-c"

@@ -113,7 +113,7 @@ simulator()
     export LD="$SDK/usr/bin/$LD_bin"
     export LDFLAGS=$(echo -arch i386 \
     	-isysroot $SDKROOT -mmacosx-version-min=10.6 \
-	-all_load -Xlinker -objc_abi_version -Xlinker 2)
+	-Xlinker -objc_abi_version -Xlinker 2)
     # the following two definitions are required to force the
     # simulator config.h to match the device config.h
     export ac_cv_header_ffi_ffi_h="no"
@@ -173,6 +173,18 @@ ECL_FILE_CNT=0
 
 ### 1.6) How many bits constitute a long long?
 ECL_LONG_LONG_BITS=64
+ECL_STDINT_HEADER=\"#include <stdint.h>\"
+ECL_UINT8_T=uint8_t
+ECL_UINT16_T=uint16_t
+ECL_UINT32_T=uint32_t
+ECL_UINT64_T=no
+ECL_INT8_T=int8_t
+ECL_INT16_T=int16_t
+ECL_INT32_T=int32_t
+ECL_INT64_T=no
+
+ECL_WORKING_SEM_INIT=yes
+ECL_WORKING_ENVIRON=yes
 
 ### 2) To cross-compile ECL so that it runs on the system
 ###		arm-apple-darwin
@@ -227,6 +239,7 @@ universal()
 	    $prefix/universal/lib/lib${lib}.a
     done
     (cd $prefix/universal; ln -fs ../armv6/include .)
+    (cd $prefix; mkdir etc; cd etc; ln -s ../host/lib/ecl-*/ucd.dat .)
 }
 
 target=simulator

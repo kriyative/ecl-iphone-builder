@@ -47,7 +47,7 @@
 		313AF8CC12BF53FC0032D21D /* UIButtonCB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonCB.h; sourceTree = "<group>"; };
 		313AF8CD12BF53FC0032D21D /* UIButtonCB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonCB.m; sourceTree = "<group>"; };
 		314C83E310448FDE00689028 /* slime */ = {isa = PBXFileReference; lastKnownFileType = folder; path = slime; sourceTree = "<group>"; };
-		317563F71268D65300CA013A /* ucd.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = ucd.dat; path = "$(ECL_IOS)/host/lib/ecl-10.4.1/ucd.dat"; sourceTree = "<absolute>"; };
+		317563F71268D65300CA013A /* ucd.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = ucd.dat; path = "$(ECL_IOS)/etc/ucd.dat"; sourceTree = "<absolute>"; };
 		31920CF11041CFDC00EAFB0D /* init.lisp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = init.lisp; sourceTree = "<group>"; };
 		31920E431043175D00EAFB0D /* ecl_boot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ecl_boot.c; sourceTree = "<group>"; };
 		31920E441043175D00EAFB0D /* ecl_boot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecl_boot.h; sourceTree = "<group>"; };
