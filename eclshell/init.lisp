@@ -1,7 +1,10 @@
 (in-package :cl-user)
 (use-package 'eclffi)
 
-(defun ipadp () (equal (subseq (machine-type) 0 4) "iPad"))
+(defun safe-substr (str start &optional length)
+  (subseq str 0 (if length (min (length str) length))))
+
+(defun ipadp () (equal (safe-substr (machine-type) 0 4) "iPad"))
 (when (ipadp) (set-frame (key-window) '(0 0 768 1024)))
 
 (defvar *label* nil)
@@ -93,9 +96,6 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
   (funcall (read-from-string "swank-loader:init")))
 
 (swank-load (pathname-parent *load-pathname*))
-
-(defun safe-substr (str start &optional length)
-  (subseq str 0 (if length (min (length str) length))))
 
 (defun get-ip-address-string (&optional ip-address)
   (let ((ip-vec (or ip-address
