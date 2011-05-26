@@ -112,7 +112,7 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
  "SLIME-listener"
  (lambda ()
    (with-autorelease-pool ()
-     (let ((swank-port 4010))
+     (let ((swank-port 4005))
        (cond
          ((string-equal (safe-substr (machine-type) 0 2) "iP")
           (let ((swank::*loopback-interface* (get-ip-address-string)))
