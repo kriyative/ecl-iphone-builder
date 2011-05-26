@@ -4,6 +4,10 @@
 ## simulator and device. The universal option will build fat libs from
 ## the simulator and device builds.
 ##
+target=simulator
+iphone_sdk_ver=4.3
+clean=no
+build_debug=no
 enable_threads=yes
 host_config_opts="\
 	--disable-longdouble \
@@ -72,11 +76,35 @@ distclean()
     rm -f Makefile
 }
 
+set_build_dir()
+{
+    if [ "$build_debug" = "yes" ]; then
+	build_dir=$1
+	[ -d $build_dir ] || mkdir -p $build_dir
+	rm -f build
+	ln -s $build_dir build
+    else
+	[ -d build ] || mkdir -p build
+    fi
+}
+
+ensure_build_dir()
+{
+    build_dir=$1
+    set_build_dir $build_dir
+    if [ "$clean" = "yes" ]; then
+	distclean
+	set_build_dir $build_dir
+    fi
+}
+
 host()
 {
+    ensure_build_dir build.host
     export CC="$SDK/usr/bin/$CC_bin"
-    export CFLAGS="-g"
+    export CFLAGS="-g -m32"
     export LD="$SDK/usr/bin/$LD_bin"
+    export LDFLAGS="-m32"
     configure $install_root/host "${host_config_opts}"
     build $install_root/host
     chmod +x $install_root/host/lib/ecl*/dpp \
@@ -85,7 +113,7 @@ host()
 
 simulator()
 {
-    mkdir -p build
+    ensure_build_dir build.simulator
     export SDK=/Developer/Platforms/iPhoneSimulator.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneSimulator${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/$CC_bin"
@@ -119,7 +147,6 @@ simulator()
     export ac_cv_header_ffi_ffi_h="no"
     export dynamic_ffi="no"
     configure $install_root/simulator "${base_config_opts}"
-    mv build/Makefile.new build/Makefile
     {
 	echo "#define HAVE_NATIVE_mpn_add_n 1";
 	echo "#define HAVE_NATIVE_mpn_sub_n 1";
@@ -200,10 +227,9 @@ ECL_TO_RUN=${ecl_to_run}
 device()
 {
     arch=$1
+    ensure_build_dir build.$arch
     prefix=$install_root/${arch}
     ecl_root=$install_root/host
-    mkdir -p build
-    cross_config "$ecl_root/bin/ecl" > build/cross_config
     export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneOS${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/$CC_bin"
@@ -212,6 +238,7 @@ device()
     export CPP="$SDK/usr/bin/cpp"
     export LD="$SDK/usr/bin/$LD_bin"
     export LDFLAGS="-arch ${arch} -isysroot $SDKROOT"
+    cross_config "$ecl_root/bin/ecl" > build/cross_config
     configure $prefix "${base_config_opts} --host=arm-apple-darwin"
     build $prefix
 }
@@ -239,12 +266,8 @@ universal()
 	    $prefix/universal/lib/lib${lib}.a
     done
     (cd $prefix/universal; ln -fs ../armv6/include .)
-    (cd $prefix; mkdir etc; cd etc; ln -s ../host/lib/ecl-*/ucd.dat .)
+    (cd $prefix; mkdir -p etc; cd etc; rm -f ucd.dat; ln -s ../host/lib/ecl-*/ucd.dat .)
 }
-
-target=simulator
-iphone_sdk_ver=4.3
-clean=no
 
 usage()
 {
@@ -255,13 +278,14 @@ usage()
     echo " sdk-ver -- the sdk version to use [$iphone_sdk_ver]"
 }
 
-while getopts 'a:d:v:t:c' o; do
+while getopts 'a:d:v:t:cx' o; do
 case "$o" in
     a) arch="$OPTARG";;
     d) install_root="$OPTARG";;
     v) iphone_sdk_ver="$OPTARG";;
     t) target="$OPTARG";;
     c) clean=yes;;
+    x) build_debug=yes;;
     ?) usage
     esac
 done
@@ -272,24 +296,19 @@ echo "Installing in $install_root"
 
 case "$target" in
     device)
-	if [ "$clean" = "yes" ]; then distclean; fi;
 	if [ "" = "${arch}" ]; then
 	    echo "Please specify CPU architecture (armv6, armv7)."
 	    exit 1
 	fi
 	device $arch;;
     host|simulator|universal)
-	if [ "$clean" = "yes" ]; then distclean; fi;
 	$target;;
     all)
-	distclean;
-	host || exit 1;
-	distclean;
-	simulator || exit 1;
-	distclean;
-	device armv6 || exit 1;
-	distclean;
-	device armv7 || exit 1;
+	clean="yes"
+	host || exit 1
+	simulator || exit 1
+	device armv6 || exit 1
+	device armv7 || exit 1
 	universal;;
     *)
 	echo "Unknown target $target";
