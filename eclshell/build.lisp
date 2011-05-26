@@ -29,9 +29,6 @@
       (dolist (f (mapcar (lambda (x) (make-pathname :type x :defaults source))
                          '("c" "h" "o" "data")))
         (format t "~&;; deleting ~a" f)
-        (safe-delete-file f))
-      (let ((f (make-pathname :name (util:str "lib" (pathname-name source)) :type "a")))
-        (format t "~&;; deleting ~a" f)
         (safe-delete-file f)))))
 
 (defun build (target source-files &key ecl-include-dir cflags sdk sysroot)
