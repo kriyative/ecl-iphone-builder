@@ -75,8 +75,9 @@ distclean()
 host()
 {
     export CC="$SDK/usr/bin/$CC_bin"
-    export CFLAGS="-g"
+    export CFLAGS="-g -m32"
     export LD="$SDK/usr/bin/$LD_bin"
+    export LDFLAGS="-m32"
     configure $install_root/host "${host_config_opts}"
     build $install_root/host
     chmod +x $install_root/host/lib/ecl*/dpp \
