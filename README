@@ -10,7 +10,7 @@ Alternatively, download the release as a tar.gz archive:
 
 Next, download ECL:
 
-  curl -O http://space.dl.sourceforge.net/project/ecls/ecls/10.4/ecl-11.1.1.tar.gz
+  curl -O http://space.dl.sourceforge.net/project/ecls/ecls/11.1/ecl-11.1.1.tar.gz
   tar xzf ecl-11.1.1.tar.gz
 
 [1] Apply the ECL for iOS patches.
