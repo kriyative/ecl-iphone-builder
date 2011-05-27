@@ -110,18 +110,21 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 
 (mp:process-run-function
  "SLIME-listener"
- (lambda ()
+ (lambda (&aux (swank-port 4005))
    (with-autorelease-pool ()
-     (let ((swank-port 4005))
+     (flet ((notify-user (address port)
+              (set-text *label*
+                        (format nil "slime: ~a:~a~%"
+                                address port))
+              (cocoa::show-alert "Swank Ready" 
+               :message (format nil "Connect to ~a:~a from MCLIDE or SLIME." 
+                                address port))))
        (cond
-         ((string-equal (safe-substr (machine-type) 0 2) "iP")
-          (let ((swank::*loopback-interface* (get-ip-address-string)))
-            (swank:create-server :port swank-port :dont-close t)
-            (set-text *label*
-                      (format nil "slime: ~a:~a~%"
-                              swank::*loopback-interface*
-                              swank-port))))
-         (t
-          (swank:create-server :port swank-port :dont-close t)
-          (set-text *label*
-                    (format nil "slime: ~a:~a~%" "127.0.0.1" swank-port))))))))
+        ((string-equal (safe-substr (machine-type) 0 2) "iP")
+         (let ((swank::*loopback-interface* (get-ip-address-string)))
+           (swank:create-server :port swank-port :dont-close t)
+           (notify-user swank::*loopback-interface* swank-port)))
+        (t
+         (swank:create-server :port swank-port :dont-close t)
+         (notify-user "127.0.0.1" swank-port)))))))
+
