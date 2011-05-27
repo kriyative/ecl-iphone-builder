@@ -1,24 +1,33 @@
 (in-package :cl-user)
 (use-package 'eclffi)
 
+(defun safe-substr (str start &optional length)
+  (subseq str 0 (if length (min (length str) length))))
+
+(defun ipadp () (equal (safe-substr (machine-type) 0 4) "iPad"))
+(when (ipadp) (set-frame (key-window) '(0 0 768 1024)))
+
 (defvar *label* nil)
 
 (setq *label* (make-label ""))
-(set-text *label* "loading ...")
-(redraw *label*)
 (add-subview (key-window) *label*)
 (set-frame *label* '(10.0 50.0 300.0 35.0))
+(set-text *label* "loading ...")
+(redraw *label*)
 
-(let ((n 0))
+(let ((n 0)
+      (click-label (make-label "")))
+  (set-frame click-label '(10 90 300 35))
+  (add-subview (key-window) click-label)
   (add-subview (key-window)
-               (make-button :frame '(140 230 40 20)
-                            :title "click"
+               (make-button :frame '(140 230 100 40)
+                            :title "tap"
                             :background-color (color-argb 1 0.5 0.5 0.5)
                             :on-click (lambda (button)
                                         (declare (ignore button))
-                                        (set-text *label*
+                                        (set-text click-label
                                                   (format nil
-                                                          "~d click~:p"
+                                                          "~d tap~:p"
                                                           (incf n)))))))
 
 (setq *print-case* :downcase)           ; I like lowercase better
@@ -88,9 +97,6 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 
 (swank-load (pathname-parent *load-pathname*))
 
-(defun safe-substr (str start &optional length)
-  (subseq str 0 (if length (min (length str) length))))
-
 (defun get-ip-address-string (&optional ip-address)
   (let ((ip-vec (or ip-address
                     (sb-bsd-sockets:host-ent-address
@@ -104,21 +110,21 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
 
 (mp:process-run-function
  "SLIME-listener"
- (lambda ()
+ (lambda (&aux (swank-port 4005))
    (with-autorelease-pool ()
      (flet ((notify-user (address port)
               (set-text *label*
                         (format nil "slime: ~a:~a~%"
                                 address port))
               (cocoa::show-alert "Swank Ready" 
-               :message (format nil "Connect to ~a:~a from MCLIDE or Emacs SLIME." 
+               :message (format nil "Connect to ~a:~a from MCLIDE or SLIME." 
                                 address port))))
        (cond
         ((string-equal (safe-substr (machine-type) 0 2) "iP")
          (let ((swank::*loopback-interface* (get-ip-address-string)))
-           (swank:create-server :port 4005 :dont-close t)
-           (notify-user swank::*loopback-interface* 4005)))
+           (swank:create-server :port swank-port :dont-close t)
+           (notify-user swank::*loopback-interface* swank-port)))
         (t
-         (swank:create-server :port 4005 :dont-close t)
-         (notify-user "127.0.0.1" 4005)))))))
-       
+         (swank:create-server :port swank-port :dont-close t)
+         (notify-user "127.0.0.1" swank-port)))))))
+

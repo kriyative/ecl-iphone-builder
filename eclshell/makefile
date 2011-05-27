@@ -24,4 +24,4 @@ lib$(module).a: $(module).lisp
 	rm -f $$f
 
 clean:
-	rm -f *.data $(module).[cho] util.[cho] lib$(module)*.a
+	rm -f lib$(module)*.a

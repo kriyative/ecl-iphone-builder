@@ -1,719 +1,1232 @@
-Index: src/configure
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/configure,v
-retrieving revision 1.287
-diff -r1.287 configure
-4344,4345c4344,4345
-<   ECL_MIN_TO_RUN=`${ECL_TO_RUN} -eval '(progn (print (truename "sys:ecl_min")) (si:quit))' \
-< 	| grep '\#\P' | sed 's,#P"\(.*\)",\1,'`
----
->   ECL_MIN_TO_RUN=`${ECL_TO_RUN} -norc -eval '(progn (print (truename "sys:ecl_min")) (si:quit))' \
-> 	| grep -v '^;;;' | grep '\#\P' | sed 's,#P"\(.*\)",\1,'`
-4351,4352c4351,4352
-<   DPP_TO_RUN=`${ECL_TO_RUN} -eval '(progn (print (truename "sys:dpp")) (si:quit))' \
-< 	| grep '\#\P' | sed 's,#P"\(.*\)",\1,'`
----
->   DPP_TO_RUN=`${ECL_TO_RUN} -norc -eval '(progn (print (truename "sys:dpp")) (si:quit))' \
-> 	| grep -v '^;;;' | grep '\#\P' | sed 's,#P"\(.*\)",\1,'`
-5825,5831c5825
-<   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-< $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-< { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&5
-< $as_echo "$as_me: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&2;}
-<    { (exit 1); exit 1; }; }; }
----
->     working_sem_init=yes
-8092,8098c8086
-<   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-< $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-< { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&5
-< $as_echo "$as_me: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&2;}
-<    { (exit 1); exit 1; }; }; }
----
->       : # do nothing?
-8597,8603c8585
-<   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-< $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-< { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&5
-< $as_echo "$as_me: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&2;}
-<    { (exit 1); exit 1; }; }; }
----
->     : # do nothing
-9374,9380c9356
-<   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-< $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-< { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&5
-< $as_echo "$as_me: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&2;}
-<    { (exit 1); exit 1; }; }; }
----
->     : # do nothing
-9964a9941
-> fi
-9976d9952
-< fi
-10321,10327c10297
-<   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-< $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-< { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&5
-< $as_echo "$as_me: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&2;}
-<    { (exit 1); exit 1; }; }; }
----
->     : # do nothing
-13630,13636c13600
-<   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-< $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-< { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&5
-< $as_echo "$as_me: error: cannot run test program while cross compiling
-< See \`config.log' for more details." >&2;}
-<    { (exit 1); exit 1; }; }; }
----
->   working_environ=yes
-13796a13761,13764
-> if test "${with_tcp}" = "builtin"; then
->     LSP_FEATURES="(cons :builtin-sockets ${LSP_FEATURES})"
->     with_tcp=yes
-> fi
-Index: src/c/symbols_list.h
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/c/symbols_list.h,v
-retrieving revision 1.253
-diff -r1.253 symbols_list.h
-1177a1178,1179
-> #else
-> {EXT_ "SETENV", SI_ORDINARY, NULL, -1, OBJNULL},
-1229a1232,1233
-> #else
-> {SYS_ "*PROFILE-ARRAY*", SI_SPECIAL, NULL, -1, OBJNULL},
-1239a1244,1247
-> #else
-> {SYS_ "PROFILE", SI_ORDINARY, NULL, -1, OBJNULL},
-> {SYS_ "CLEAR-PROFILE", SI_ORDINARY, NULL, -1, OBJNULL},
-> {SYS_ "DISPLAY-PROFILE", SI_ORDINARY, NULL, -1, OBJNULL},
-1635a1644,1645
-> #else
-> {SYS_ "LOAD-BINARY", SI_ORDINARY, NULL, -1, OBJNULL},
-1643a1654,1657
-> #else
-> {SYS_ "CALL-CFUN", SI_ORDINARY, NULL, -1, OBJNULL},
-> {KEY_ "CALLBACK", KEYWORD, NULL, -1, OBJNULL},
-> {SYS_ "MAKE-DYNAMIC-CALLBACK", SI_ORDINARY, NULL, -1, OBJNULL},
-1669a1684,1689
-> #else
-> {SYS_ "*RELATIVE-PACKAGE-NAMES*", SI_SPECIAL, NULL, -1, RELATIVE_PACKAGES_P},
-> {KEY_ "RELATIVE-PACKAGE-NAMES", KEYWORD, NULL, -1, OBJNULL},
-> {SYS_ "FIND-RELATIVE-PACKAGE", SI_ORDINARY, NULL, -1, OBJNULL},
-> {SYS_ "PACKAGE-PARENT", SI_ORDINARY, NULL, -1, OBJNULL},
-> {SYS_ "PACKAGE-CHILDREN", SI_ORDINARY, NULL, -1, OBJNULL},
-1675a1696,1697
-> #else
-> {SYS_ "GC-STATS", SI_ORDINARY, NULL, 1, OBJNULL},
-Index: src/c/symbols_list2.h
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/c/symbols_list2.h,v
-retrieving revision 1.132
-diff -r1.132 symbols_list2.h
-1177a1178,1179
-> #else
-> {EXT_ "SETENV",NULL},
-1229a1232,1233
-> #else
-> {SYS_ "*PROFILE-ARRAY*",NULL},
-1239a1244,1247
-> #else
-> {SYS_ "PROFILE",NULL},
-> {SYS_ "CLEAR-PROFILE",NULL},
-> {SYS_ "DISPLAY-PROFILE",NULL},
-1635a1644,1645
-> #else
-> {SYS_ "LOAD-BINARY",NULL},
-1643a1654,1657
-> #else
-> {SYS_ "CALL-CFUN",NULL},
-> {KEY_ "CALLBACK",NULL},
-> {SYS_ "MAKE-DYNAMIC-CALLBACK",NULL},
-1669a1684,1689
-> #else
-> {SYS_ "*RELATIVE-PACKAGE-NAMES*",NULL},
-> {KEY_ "RELATIVE-PACKAGE-NAMES",NULL},
-> {SYS_ "FIND-RELATIVE-PACKAGE",NULL},
-> {SYS_ "PACKAGE-PARENT",NULL},
-> {SYS_ "PACKAGE-CHILDREN",NULL},
-1675a1696,1697
-> #else
-> {SYS_ "GC-STATS",NULL},
-Index: src/clos/defclass.lsp
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/clos/defclass.lsp,v
-retrieving revision 1.28
-diff -r1.28 defclass.lsp
-121c121
-< #+cross
----
-> #+nil
-Index: src/cmp/cmpmain.lsp
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/cmp/cmpmain.lsp,v
-retrieving revision 1.180
-diff -r1.180 cmpmain.lsp
-334c334
-<   (let ((asdf (find-package "ASDF"))
----
->   (let ((asdf #+asdf (find-package "ASDF"))
-Index: src/gc/darwin_stop_world.c
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/gc/darwin_stop_world.c,v
-retrieving revision 1.10
-diff -r1.10 darwin_stop_world.c
-176a177,198
-> 
-> #       elif defined(ARM32)
->           lo = (void*)state.__sp;
-> 
->           GC_push_one(state.__r[0]);
->           GC_push_one(state.__r[1]);
->           GC_push_one(state.__r[2]);
->           GC_push_one(state.__r[3]);
->           GC_push_one(state.__r[4]);
->           GC_push_one(state.__r[5]);
->           GC_push_one(state.__r[6]);
->           GC_push_one(state.__r[7]);
->           GC_push_one(state.__r[8]);
->           GC_push_one(state.__r[9]);
->           GC_push_one(state.__r[10]);
->           GC_push_one(state.__r[11]);
->           GC_push_one(state.__r[12]);
->           /* GC_push_one(state.__sp); */
->           GC_push_one(state.__lr);
->           GC_push_one(state.__pc);
->           GC_push_one(state.__cpsr);
-> 
-325a348,377
-> #      elif defined(ARM32)
->         GC_THREAD_STATE_T info;
->         mach_msg_type_number_t outCount = THREAD_STATE_MAX;
->         r = thread_get_state(thread, GC_MACH_THREAD_STATE, (natural_t *)&info,
->                              &outCount);
->         if(r != KERN_SUCCESS)
->           ABORT("task_get_state failed");
-> 
->         hi = (ptr_t)FindTopOfStack(info . __sp);
-> 
->         lo = (void*)info.__sp;
-> 
->         GC_push_one(info.__r[0]);
->         GC_push_one(info.__r[1]);
->         GC_push_one(info.__r[2]);
->         GC_push_one(info.__r[3]);
->         GC_push_one(info.__r[4]);
->         GC_push_one(info.__r[5]);
->         GC_push_one(info.__r[6]);
->         GC_push_one(info.__r[7]);
->         GC_push_one(info.__r[8]);
->         GC_push_one(info.__r[9]);
->         GC_push_one(info.__r[10]);
->         GC_push_one(info.__r[11]);
->         GC_push_one(info.__r[12]);
->         /* GC_push_one(info.__sp); */
->         GC_push_one(info.__lr);
->         GC_push_one(info.__pc);
->         GC_push_one(info.__cpsr);
-> 
-Index: src/gc/include/private/gc_priv.h
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/gc/include/private/gc_priv.h,v
-retrieving revision 1.9
-diff -r1.9 gc_priv.h
-404,406c404,410
-< #		error define GC_THREAD_STATE_T
-< #		define GC_MACH_THREAD_STATE MACHINE_THREAD_STATE
-< #		define GC_MACH_THREAD_STATE_COUNT MACHINE_THREAD_STATE_COUNT
----
-> #         if defined(ARM32)
-> #           define GC_THREAD_STATE_T arm_thread_state_t
-> #         else
-> #           error define GC_THREAD_STATE_T
-> #         endif
-> #         define GC_MACH_THREAD_STATE MACHINE_THREAD_STATE
-> #         define GC_MACH_THREAD_STATE_COUNT MACHINE_THREAD_STATE_COUNT
-Index: src/gc/include/private/gcconfig.h
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/gc/include/private/gcconfig.h,v
-retrieving revision 1.12
-diff -r1.12 gcconfig.h
-63a64,68
-> /* And one for Darwin: */
-> # if defined(macosx) || (defined(__APPLE__) && defined(__MACH__))
-> #   define DARWIN
-> # endif
-> 
-67c72
-< #    if !defined(LINUX) && !defined(NETBSD)
----
-> #    if !defined(LINUX) && !defined(NETBSD) && !defined(DARWIN)
-293,294c298
-< # if defined(macosx) || (defined(__APPLE__) && defined(__MACH__))
-< #   define DARWIN
----
-> # if defined(DARWIN)
-303a308,311
-> #   elif defined(__arm__)
-> #    define ARM32
-> #    define mach_type_known
-> #    define DARWIN_DONT_PARSE_STACK
-758c766,770
-< #     define DYNAMIC_LOADING
----
-> #     ifdef IPHONE
-> #       undef DYNAMIC_LOADING
-> #     else
-> #       define DYNAMIC_LOADING
-> #     endif
-775,776c787,793
-< #     define USE_MMAP
-< #     define USE_MMAP_ANON
----
-> #     ifdef IPHONE
-> #       undef USE_MMAP
-> #       undef USE_MMAP_ANON
-> #     else
-> #       define USE_MMAP
-> #       define USE_MMAP_ANON
-> #     endif
-1285c1302,1306
-< #     define DYNAMIC_LOADING
----
-> #     ifdef IPHONE
-> #       undef DYNAMIC_LOADING
-> #     else
-> #       define DYNAMIC_LOADING
-> #     endif
-1773a1795,1806
-> #   ifdef DARWIN
->       /* iPhone */
-> #     define OS_TYPE "DARWIN"
-> #     define DATASTART ((ptr_t) get_etext())
-> #     define DATAEND    ((ptr_t) get_end())
-> /* #define STACKBOTTOM ((ptr_t) 0x30000000) */ /* FIXME: Is this needed? */
-> #     define HEURISTIC1
-> #     ifndef USE_MMAP
-> #       define USE_MMAP
-> #     endif
-> #     define USE_MMAP_ANON
-> #   endif
-1882c1915,1919
-< #     define DYNAMIC_LOADING
----
-> #     ifdef IPHONE
-> #       undef DYNAMIC_LOADING
-> #     else
-> #       define DYNAMIC_LOADING
-> #     endif
-Index: src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h,v
-retrieving revision 1.1
-diff -r1.1 arm.h
-35,36c35,42
-<  * but defines only one of __ARM_ARCH_x__ to be true			*/
-< #if defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_7__)  
----
->  * but defines only one of __ARM_ARCH_x__ to be true                    */
-> #if defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) \
->         || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6ZK__) \
->         || defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) \
->         || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7R__)
-> 
-> #include "../standard_ao_double_t.h"
-> 
-38c44
-< AO_nop_full()
----
-> AO_nop_full(void)
-52c58
-< AO_load(volatile AO_t *addr)
----
-> AO_load(const volatile AO_t *addr)
-54,56c60,62
-<   /* Cast away the volatile for architectures like IA64 where	*/
-<   /* volatile adds barrier semantics.				*/
-<   return (*(AO_t *)addr);
----
->   /* Cast away the volatile for architectures like IA64 where   */
->   /* volatile adds barrier semantics.                           */
->   return (*(const AO_t *)addr);
-87c93
-< 	unsigned long tmp;
----
->         AO_t    flag;
-89,96c95,102
-< 	__asm__ __volatile__("@AO_store\n"
-< "1:	ldrex	%0, [%1]\n"
-< "	strex	%0, %2, [%1]\n"
-< "	teq	%0, #0\n"
-< "	bne	1b"
-< 	: "=&r"(tmp)
-< 	: "r" (addr), "r"(value)
-< 	: "cc","memory");
----
->         __asm__ __volatile__("@AO_store\n"
-> "1:     ldrex   %0, [%2]\n"
-> "       strex   %0, %3, [%2]\n"
-> "       teq     %0, #0\n"
-> "       bne     1b"
->         : "=&r"(flag), "+m"(*addr)
->         : "r" (addr), "r"(value)
->         : "cc");
-114,125d119
-< 	
-< 	AO_TS_t oldval;
-< 	unsigned long tmp;
-< 
-< 	__asm__ __volatile__("@AO_test_and_set\n"
-< "1:	ldrex	%0, [%2]\n"
-< "	strex	%1, %3, [%2]\n"
-< "	teq	%1, #0\n"
-< "	bne	1b\n"
-< 	: "=&r"(oldval),"=&r"(tmp)
-< 	: "r"(addr), "r"(1)
-< 	: "memory","cc");
-127c121,133
-< 	return oldval;
----
->         AO_TS_t oldval;
->         unsigned long flag;
-> 
->         __asm__ __volatile__("@AO_test_and_set\n"
-> "1:     ldrex   %0, [%3]\n"
-> "       strex   %1, %4, [%3]\n"
-> "       teq             %1, #0\n"
-> "       bne             1b\n"
->         : "=&r"(oldval),"=&r"(flag), "+m"(*addr)
->         : "r"(addr), "r"(1)
->         : "cc");
-> 
->         return oldval;
-136,137c142,143
-< 	unsigned long tmp,tmp2;
-< 	AO_t result;
----
->         unsigned long flag,tmp;
->         AO_t result;
-139,147c145,153
-< 	__asm__ __volatile__("@AO_fetch_and_add\n"
-< "1:	ldrex	%0, [%4]\n"			/* get original			  */
-< "	add     %2, %3, %0\n"		/* sum up */
-< "	strex	%1, %2, [%4]\n"		/* store them */
-< "	teq	%1, #0\n"
-< "	bne	1b\n"
-< 	: "=&r"(result),"=&r"(tmp),"=&r"(tmp2)
-< 	: "r"(incr), "r"(p)
-< 	: "cc","memory");
----
->         __asm__ __volatile__("@AO_fetch_and_add\n"
-> "1:     ldrex   %0, [%5]\n"                     /* get original         */
-> "       add     %2, %0, %4\n"           /* sum up in incr       */
-> "       strex   %1, %2, [%5]\n"         /* store them           */
-> "       teq             %1, #0\n"
-> "       bne             1b\n"
->         : "=&r"(result),"=&r"(flag),"=&r"(tmp),"+m"(*p) /* 0..3 */
->         : "r"(incr), "r"(p)                                                             /* 4..5 */
->         : "cc");
-149c155
-< 	return result;
----
->         return result;
-158,159c164,165
-< 	unsigned long tmp,tmp2;
-< 	AO_t result;
----
->         unsigned long flag,tmp;
->         AO_t result;
-161,169c167,175
-< 	__asm__ __volatile__("@AO_fetch_and_add1\n"
-< "1:	ldrex	%0, [%3]\n"			/* get original	  */
-< "	add     %1, %0, #1\n"		/* increment */
-< "	strex	%2, %1, [%3]\n"		/* store them */
-< "	teq	%2, #0\n"
-< "	bne	1b\n"
-< 	: "=&r"(result), "=&r"(tmp), "=&r"(tmp2)
-< 	: "r"(p)
-< 	: "cc","memory");
----
->         __asm__ __volatile__("@AO_fetch_and_add1\n"
-> "1:     ldrex   %0, [%4]\n"                     /* get original   */
-> "       add     %1, %0, #1\n"           /* increment */
-> "       strex   %2, %1, [%4]\n"         /* store them */
-> "       teq             %2, #0\n"
-> "       bne             1b\n"
->         : "=&r"(result), "=&r"(tmp), "=&r"(flag), "+m"(*p)
->         : "r"(p)
->         : "cc");
-171c177
-< 	return result;
----
->         return result;
-180,181c186,187
-< 	unsigned long tmp,tmp2;
-< 	AO_t result;
----
->         unsigned long flag,tmp;
->         AO_t result;
-183,191c189,197
-< 	__asm__ __volatile__("@ AO_fetch_and_sub1\n"
-< "1:	ldrex	%0, [%3]\n"			/* get original	  */
-< "	sub     %1, %0, #1\n"		/* increment */
-< "	strex	%2, %1, [%3]\n"		/* store them */
-< "	teq	%2, #0\n"
-< "	bne	1b\n"
-< 	: "=&r"(result), "=&r"(tmp), "=&r"(tmp2)
-< 	: "r"(p)
-< 	: "cc","memory");
----
->         __asm__ __volatile__("@AO_fetch_and_sub1\n"
-> "1:     ldrex   %0, [%4]\n"                     /* get original   */
-> "       sub     %1, %0, #1\n"           /* decrement */
-> "       strex   %2, %1, [%4]\n"         /* store them */
-> "       teq             %2, #0\n"
-> "       bne             1b\n"
->         : "=&r"(result), "=&r"(tmp), "=&r"(flag), "+m"(*p)
->         : "r"(p)
->         : "cc");
-193c199
-< 	return result;
----
->         return result;
-202c208
-< 		  	     	AO_t old_val, AO_t new_val) 
----
->                                 AO_t old_val, AO_t new_val)
-204c210
-<   	 AO_t result,tmp;
----
->          AO_t result,tmp;
-206,216c212,221
-< 	__asm__ __volatile__("@ AO_compare_and_swap\n"
-< "1:	ldrex	%1, [%2]\n"			/* get original	*/
-< "	mov		%0, #2\n"			/* store a flag */
-< "	teq		%1, %3\n"			/* see if match */
-< "	strexeq	%0, %4, [%2]\n"		/* store new one if matched */
-< "	teq		%0, #1\n"
-< "	beq		1b\n"				/* if update failed, repeat */
-< "	eor		%0, %0, #2\n"		/* if succeded, return 2, else 0 */
-< 	: "=&r"(result), "=&r"(tmp)
-< 	: "r"(addr), "r"(old_val), "r"(new_val)
-< 	: "cc","memory");
----
->         __asm__ __volatile__("@ AO_compare_and_swap\n"
-> "1:     mov             %0, #2\n"                       /* store a flag */
-> "       ldrex   %1, [%3]\n"                     /* get original */
-> "       teq             %1, %4\n"                       /* see if match */
-> "       strexeq %0, %5, [%3]\n"         /* store new one if matched */
-> "       teq             %0, #1\n"
-> "       beq             1b\n"                           /* if update failed, repeat */
->         : "=&r"(result), "=&r"(tmp), "+m"(*addr)
->         : "r"(addr), "r"(old_val), "r"(new_val)
->         : "cc");
-218c223
-< 	return (result>>1);
----
->         return !(result&2);                     /* if succeded, return 1, else 0 */
-221a227,255
-> AO_INLINE int
-> AO_compare_double_and_swap_double(volatile AO_double_t *addr,
->                                                           AO_t old_val1, AO_t old_val2,
->                                                           AO_t new_val1, AO_t new_val2)
-> {
->         double_ptr_storage old_val = ((double_ptr_storage)old_val2 << 32) | old_val1;
->         double_ptr_storage new_val = ((double_ptr_storage)new_val2 << 32) | new_val1;
-> 
->     double_ptr_storage tmp;
->         int result;
-> 
->         while(1) {
->                 __asm__ __volatile__("@ AO_compare_and_swap_double\n"
->                 "       ldrexd  %0, [%1]\n"                     /* get original to r1&r2*/
->                         : "=&r"(tmp)
->                         : "r"(addr)
->                         : "cc");
->                 if(tmp != old_val)      return 0;
->                 __asm__ __volatile__(
->                 "       strexd  %0, %2, [%3]\n" /* store new one if matched */
->                         : "=&r"(result),"+m"(*addr)
->                         : "r"(new_val), "r"(addr)
->                         : "cc");
->                 if(!result)     return 1;
->         }
-> }
-> 
-> #define AO_HAVE_compare_double_and_swap_double
-> 
-Index: src/gmp/mpn/arm/invert_limb.asm
-===================================================================
-RCS file: /cvsroot/ecls/ecl/src/gmp/mpn/arm/invert_limb.asm,v
-retrieving revision 1.3
-diff -r1.3 invert_limb.asm
-9c9
-< dnl  by the Free Software Foundation; either version 2.1 of the License, or (at
----
-> dnl  by the Free Software Foundation; either version 3 of the License, or (at
-18,20c18
-< dnl  along with the GNU MP Library; see the file COPYING.LIB.  If not, write
-< dnl  to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-< dnl  Boston, MA 02110-1301, USA.
----
-> dnl  along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.
-24,26c22,24
-< C INPUT PARAMETERS
-< define(`d',`r0')	C number to be inverted
-< 
----
-> ifdef(`APPLE',
-> `define(`RODATA',`.const')',
-> `define(`RODATA',`.section .rodata')')
-27a26
-> ASM_START()
-29,97c28,90
-< 	stmfd	sp!, {r4, lr}
-< 	mov	r3, d, lsr #23
-< 	sub	r3, r3, #256
-< 	add	r2, pc, #invtab-.-8
-< 	mov	r3, r3, lsl #1
-< 	ldrh	r1, [r2, r3]		C get initial approximation from table
-< 	mov	r2, r1, lsl #6		C start iteration 1
-< 	mul	ip, r2, r2
-< 	umull	lr, r4, ip, d
-< 	mov	r2, r4, lsl #1
-< 	rsb	r2, r2, r1, lsl #23	C iteration 1 complete
-< 	umull	ip, r3, r2, r2		C start iteration 2
-< 	umull	lr, r4, r3, d
-< 	umull	r3, r1, ip, d
-< 	adds	lr, lr, r1
-< 	addcs	r4, r4, #1
-< 	mov	r3, lr, lsr #30
-< 	orr	r4, r3, r4, lsl #2
-< 	mov	lr, lr, lsl #2
-< 	cmn	lr, #1
-< 	rsc	r2, r4, r2, lsl #2	C iteration 2 complete
-< 	umull	ip, r1, d, r2		C start adjustment step
-< 	add	r1, r1, d
-< 	cmn	r1, #1
-< 	beq	L(1)
-< 	adds	ip, ip, d
-< 	adc	r1, r1, #0
-< 	add	r2, r2, #1
-< L(1):
-< 	adds	r3, ip, d
-< 	adcs	r1, r1, #0
-< 	moveq	r0, r2
-< 	addne	r0, r2, #1
-< 	ldmfd	sp!, {r4, pc}
-< 
-< invtab:
-< 	.short	1023,1020,1016,1012,1008,1004,1000,996
-< 	.short	992,989,985,981,978,974,970,967
-< 	.short	963,960,956,953,949,946,942,939
-< 	.short	936,932,929,926,923,919,916,913
-< 	.short	910,907,903,900,897,894,891,888
-< 	.short	885,882,879,876,873,870,868,865
-< 	.short	862,859,856,853,851,848,845,842
-< 	.short	840,837,834,832,829,826,824,821
-< 	.short	819,816,814,811,809,806,804,801
-< 	.short	799,796,794,791,789,787,784,782
-< 	.short	780,777,775,773,771,768,766,764
-< 	.short	762,759,757,755,753,751,748,746
-< 	.short	744,742,740,738,736,734,732,730
-< 	.short	728,726,724,722,720,718,716,714
-< 	.short	712,710,708,706,704,702,700,699
-< 	.short	697,695,693,691,689,688,686,684
-< 	.short	682,680,679,677,675,673,672,670
-< 	.short	668,667,665,663,661,660,658,657
-< 	.short	655,653,652,650,648,647,645,644
-< 	.short	642,640,639,637,636,634,633,631
-< 	.short	630,628,627,625,624,622,621,619
-< 	.short	618,616,615,613,612,611,609,608
-< 	.short	606,605,604,602,601,599,598,597
-< 	.short	595,594,593,591,590,589,587,586
-< 	.short	585,583,582,581,579,578,577,576
-< 	.short	574,573,572,571,569,568,567,566
-< 	.short	564,563,562,561,560,558,557,556
-< 	.short	555,554,553,551,550,549,548,547
-< 	.short	546,544,543,542,541,540,539,538
-< 	.short	537,536,534,533,532,531,530,529
-< 	.short	528,527,526,525,524,523,522,521
-< 	.short	520,519,518,517,516,515,514,513
-< EPILOGUE(mpn_invert_limb)
----
-> 	ldr	r2, L(4)
-> L(2):	add	r2, pc, r2
-> 	mov	r3, r0, lsr #23
-> 	mov	r3, r3, asl #1
-> 	ldrh	r3, [r3, r2]
-> 	mov	r1, r3, asl #17
-> 	mul	r3, r3, r3
-> 	umull	r12, r2, r3, r0
-> 	sub	r1, r1, r2, asl #1
-> 	umull	r12, r2, r1, r1
-> 	umull	r3, r12, r0, r12
-> 	umull	r2, r3, r0, r2
-> 	adds	r2, r2, r12
-> 	adc	r3, r3, #0
-> 	rsb	r1, r3, r1
-> 	mvn	r2, r2, lsr #30
-> 	add	r2, r2, r1, asl #2
-> 	umull	r3, r12, r0, r2
-> 	adds	r1, r3, r0
-> 	adc	r12, r12, r0
-> 	rsb	r0, r12, r2
-> 	bx	lr
-> 
-> 	ALIGN(4)
-> L(4):	.word	approx_tab-8-512-L(2)
-> EPILOGUE()
-> 
-> 	RODATA
-> 	ALIGN(2)
-> approx_tab:
-> 	.short    0xffc0,0xfec0,0xfdc0,0xfcc0,0xfbc0,0xfac0,0xfa00,0xf900
-> 	.short    0xf800,0xf700,0xf640,0xf540,0xf440,0xf380,0xf280,0xf180
-> 	.short    0xf0c0,0xefc0,0xef00,0xee00,0xed40,0xec40,0xeb80,0xeac0
-> 	.short    0xe9c0,0xe900,0xe840,0xe740,0xe680,0xe5c0,0xe500,0xe400
-> 	.short    0xe340,0xe280,0xe1c0,0xe100,0xe040,0xdf80,0xdec0,0xde00
-> 	.short    0xdd40,0xdc80,0xdbc0,0xdb00,0xda40,0xd980,0xd8c0,0xd800
-> 	.short    0xd740,0xd680,0xd600,0xd540,0xd480,0xd3c0,0xd340,0xd280
-> 	.short    0xd1c0,0xd140,0xd080,0xcfc0,0xcf40,0xce80,0xcdc0,0xcd40
-> 	.short    0xcc80,0xcc00,0xcb40,0xcac0,0xca00,0xc980,0xc8c0,0xc840
-> 	.short    0xc780,0xc700,0xc640,0xc5c0,0xc540,0xc480,0xc400,0xc380
-> 	.short    0xc2c0,0xc240,0xc1c0,0xc100,0xc080,0xc000,0xbf80,0xbec0
-> 	.short    0xbe40,0xbdc0,0xbd40,0xbc80,0xbc00,0xbb80,0xbb00,0xba80
-> 	.short    0xba00,0xb980,0xb900,0xb840,0xb7c0,0xb740,0xb6c0,0xb640
-> 	.short    0xb5c0,0xb540,0xb4c0,0xb440,0xb3c0,0xb340,0xb2c0,0xb240
-> 	.short    0xb1c0,0xb140,0xb0c0,0xb080,0xb000,0xaf80,0xaf00,0xae80
-> 	.short    0xae00,0xad80,0xad40,0xacc0,0xac40,0xabc0,0xab40,0xaac0
-> 	.short    0xaa80,0xaa00,0xa980,0xa900,0xa8c0,0xa840,0xa7c0,0xa740
-> 	.short    0xa700,0xa680,0xa600,0xa5c0,0xa540,0xa4c0,0xa480,0xa400
-> 	.short    0xa380,0xa340,0xa2c0,0xa240,0xa200,0xa180,0xa140,0xa0c0
-> 	.short    0xa080,0xa000,0x9f80,0x9f40,0x9ec0,0x9e80,0x9e00,0x9dc0
-> 	.short    0x9d40,0x9d00,0x9c80,0x9c40,0x9bc0,0x9b80,0x9b00,0x9ac0
-> 	.short    0x9a40,0x9a00,0x9980,0x9940,0x98c0,0x9880,0x9840,0x97c0
-> 	.short    0x9780,0x9700,0x96c0,0x9680,0x9600,0x95c0,0x9580,0x9500
-> 	.short    0x94c0,0x9440,0x9400,0x93c0,0x9340,0x9300,0x92c0,0x9240
-> 	.short    0x9200,0x91c0,0x9180,0x9100,0x90c0,0x9080,0x9000,0x8fc0
-> 	.short    0x8f80,0x8f40,0x8ec0,0x8e80,0x8e40,0x8e00,0x8d80,0x8d40
-> 	.short    0x8d00,0x8cc0,0x8c80,0x8c00,0x8bc0,0x8b80,0x8b40,0x8b00
-> 	.short    0x8a80,0x8a40,0x8a00,0x89c0,0x8980,0x8940,0x88c0,0x8880
-> 	.short    0x8840,0x8800,0x87c0,0x8780,0x8740,0x8700,0x8680,0x8640
-> 	.short    0x8600,0x85c0,0x8580,0x8540,0x8500,0x84c0,0x8480,0x8440
-> 	.short    0x8400,0x8380,0x8340,0x8300,0x82c0,0x8280,0x8240,0x8200
-> 	.short    0x81c0,0x8180,0x8140,0x8100,0x80c0,0x8080,0x8040,0x8000
-> ASM_END()
+diff -rc ../ecl-11.1.1/src/c/symbols_list.h ./src/c/symbols_list.h
+*** ../ecl-11.1.1/src/c/symbols_list.h	Sun Jan 16 13:39:57 2011
+--- ./src/c/symbols_list.h	Fri May 20 12:25:45 2011
+***************
+*** 1154,1159 ****
+--- 1154,1161 ----
+  {SYS_ "POINTER", SI_ORDINARY, si_pointer, 1, OBJNULL},
+  #ifndef ECL_CMU_FORMAT
+  {SYS_ "PRETTY-PRINT-FORMAT", SI_ORDINARY, NULL, -1, OBJNULL},
++ #else
++ {SYS_ "PRETTY-PRINT-FORMAT", NULL},
+  #endif
+  {SYS_ "PROCESS-DECLARATIONS", SI_ORDINARY, si_process_declarations, -1, OBJNULL},
+  {SYS_ "PROCESS-LAMBDA", SI_ORDINARY, si_process_lambda, 1, OBJNULL},
+***************
+*** 1177,1182 ****
+--- 1179,1186 ----
+  {SYS_ "SET-SYMBOL-PLIST", SI_ORDINARY, si_set_symbol_plist, 2, OBJNULL},
+  #if defined(HAVE_PUTENV) || defined(HAVE_SETENV)
+  {EXT_ "SETENV", SI_ORDINARY, si_setenv, 2, OBJNULL},
++ #else
++ {EXT_ "SETENV", SI_ORDINARY, NULL, -1, OBJNULL},
+  #endif
+  {SYS_ "SETF-LAMBDA", SI_ORDINARY, NULL, -1, OBJNULL},
+  {SYS_ "SETF-METHOD", SI_ORDINARY, NULL, -1, OBJNULL},
+***************
+*** 1230,1235 ****
+--- 1234,1241 ----
+  
+  #ifdef PROFILE
+  {SYS_ "*PROFILE-ARRAY*", SI_SPECIAL, NULL, -1, OBJNULL},
++ #else
++ {SYS_ "*PROFILE-ARRAY*", SI_SPECIAL, NULL, -1, OBJNULL},
+  #endif
+  
+  {EXT_ "*SOURCE-LOCATION*", EXT_SPECIAL, NULL, -1, Cnil},
+***************
+*** 1240,1245 ****
+--- 1246,1255 ----
+  {SYS_ "PROFILE", SI_ORDINARY, si_profile, -1, OBJNULL},
+  {SYS_ "CLEAR-PROFILE", SI_ORDINARY, si_clear_profile, -1, OBJNULL},
+  {SYS_ "DISPLAY-PROFILE", SI_ORDINARY, si_display_profile, -1, OBJNULL},
++ #else
++ {SYS_ "PROFILE", SI_ORDINARY, NULL, -1, OBJNULL},
++ {SYS_ "CLEAR-PROFILE", SI_ORDINARY, NULL, -1, OBJNULL},
++ {SYS_ "DISPLAY-PROFILE", SI_ORDINARY, NULL, -1, OBJNULL},
+  #endif /* PROFILE */
+  
+  #ifdef TCP
+***************
+*** 1464,1469 ****
+--- 1474,1481 ----
+  {SYS_ "C-ULONG-LONG-MAX",SI_CONSTANT,NULL,-1,OBJNULL}, /* See main.d */
+  #ifdef ecl_long_long_t
+  {SYS_ "C-LONG-LONG-BIT", SI_CONSTANT, NULL, -1, MAKE_FIXNUM(ECL_LONG_LONG_BITS)},
++ #else
++ {SYS_ "C-LONG-LONG-BIT", NULL},
+  #endif
+  #ifdef GBC_BOEHM
+  {SYS_ "GC", SI_ORDINARY, si_gc, -1, OBJNULL},
+***************
+*** 1653,1658 ****
+--- 1665,1672 ----
+  
+  #ifdef ENABLE_DLOPEN
+  {SYS_ "LOAD-BINARY", SI_ORDINARY, si_load_binary, 4, OBJNULL},
++ #else
++ {SYS_ "LOAD-BINARY", SI_ORDINARY, NULL, -1, OBJNULL},
+  #endif
+  
+  {SYS_ "*CODE-WALKER*", SI_SPECIAL, NULL, -1, OBJNULL},
+***************
+*** 1661,1666 ****
+--- 1675,1684 ----
+  {SYS_ "CALL-CFUN", SI_ORDINARY, si_call_cfun, -1, OBJNULL},
+  {KEY_ "CALLBACK", KEYWORD, NULL, -1, OBJNULL},
+  {SYS_ "MAKE-DYNAMIC-CALLBACK", SI_ORDINARY, si_make_dynamic_callback, -1, OBJNULL},
++ #else
++ {SYS_ "CALL-CFUN", SI_ORDINARY, NULL, -1, OBJNULL},
++ {KEY_ "CALLBACK", KEYWORD, NULL, -1, OBJNULL},
++ {SYS_ "MAKE-DYNAMIC-CALLBACK", SI_ORDINARY, NULL, -1, OBJNULL},
+  #endif
+  {KEY_ "CDECL", KEYWORD, NULL, -1, OBJNULL},
+  {KEY_ "STDCALL", KEYWORD, NULL, -1, OBJNULL},
+***************
+*** 1687,1698 ****
+--- 1705,1724 ----
+  {SYS_ "FIND-RELATIVE-PACKAGE", SI_ORDINARY, si_find_relative_package, -1, OBJNULL},
+  {SYS_ "PACKAGE-PARENT", SI_ORDINARY, NULL, -1, OBJNULL},
+  {SYS_ "PACKAGE-CHILDREN", SI_ORDINARY, NULL, -1, OBJNULL},
++ #else
++ {SYS_ "*RELATIVE-PACKAGE-NAMES*", SI_SPECIAL, NULL, -1, RELATIVE_PACKAGES_P},
++ {KEY_ "RELATIVE-PACKAGE-NAMES", KEYWORD, NULL, -1, OBJNULL},
++ {SYS_ "FIND-RELATIVE-PACKAGE", SI_ORDINARY, NULL, -1, OBJNULL},
++ {SYS_ "PACKAGE-PARENT", SI_ORDINARY, NULL, -1, OBJNULL},
++ {SYS_ "PACKAGE-CHILDREN", SI_ORDINARY, NULL, -1, OBJNULL},
+  #endif
+  
+  {SYS_ "WRONG-TYPE-ARGUMENT", SI_ORDINARY, NULL, -1, OBJNULL},
+  
+  #ifdef GBC_BOEHM
+  {SYS_ "GC-STATS", SI_ORDINARY, si_gc_stats, 1, OBJNULL},
++ #else
++ {SYS_ "GC-STATS", SI_ORDINARY, NULL, 1, OBJNULL},
+  #endif
+  
+  {SYS_ "*CURRENT-FORM*", SI_SPECIAL, NULL, -1, OBJNULL},
+diff -rc ../ecl-11.1.1/src/c/symbols_list2.h ./src/c/symbols_list2.h
+*** ../ecl-11.1.1/src/c/symbols_list2.h	Sun Jan 16 13:39:57 2011
+--- ./src/c/symbols_list2.h	Fri May 20 12:43:42 2011
+***************
+*** 1154,1159 ****
+--- 1154,1161 ----
+  {SYS_ "POINTER","si_pointer"},
+  #ifndef ECL_CMU_FORMAT
+  {SYS_ "PRETTY-PRINT-FORMAT",NULL},
++ #else
++ {SYS_ "PRETTY-PRINT-FORMAT", NULL},
+  #endif
+  {SYS_ "PROCESS-DECLARATIONS","si_process_declarations"},
+  {SYS_ "PROCESS-LAMBDA","si_process_lambda"},
+***************
+*** 1177,1182 ****
+--- 1179,1186 ----
+  {SYS_ "SET-SYMBOL-PLIST","si_set_symbol_plist"},
+  #if defined(HAVE_PUTENV) || defined(HAVE_SETENV)
+  {EXT_ "SETENV","si_setenv"},
++ #else
++ {EXT_ "SETENV",NULL},
+  #endif
+  {SYS_ "SETF-LAMBDA",NULL},
+  {SYS_ "SETF-METHOD",NULL},
+***************
+*** 1230,1235 ****
+--- 1234,1241 ----
+  
+  #ifdef PROFILE
+  {SYS_ "*PROFILE-ARRAY*",NULL},
++ #else
++ {SYS_ "*PROFILE-ARRAY*",NULL},
+  #endif
+  
+  {EXT_ "*SOURCE-LOCATION*",NULL},
+***************
+*** 1240,1245 ****
+--- 1246,1255 ----
+  {SYS_ "PROFILE","si_profile"},
+  {SYS_ "CLEAR-PROFILE","si_clear_profile"},
+  {SYS_ "DISPLAY-PROFILE","si_display_profile"},
++ #else
++ {SYS_ "PROFILE",NULL},
++ {SYS_ "CLEAR-PROFILE",NULL},
++ {SYS_ "DISPLAY-PROFILE",NULL},
+  #endif /* PROFILE */
+  
+  #ifdef TCP
+***************
+*** 1464,1469 ****
+--- 1474,1481 ----
+  {SYS_ "C-ULONG-LONG-MAX",NULL}, /* See main.d */
+  #ifdef ecl_long_long_t
+  {SYS_ "C-LONG-LONG-BIT",NULL},
++ #else
++ {SYS_ "C-LONG-LONG-BIT", NULL},
+  #endif
+  #ifdef GBC_BOEHM
+  {SYS_ "GC","si_gc"},
+***************
+*** 1653,1658 ****
+--- 1665,1672 ----
+  
+  #ifdef ENABLE_DLOPEN
+  {SYS_ "LOAD-BINARY","si_load_binary"},
++ #else
++ {SYS_ "LOAD-BINARY",NULL},
+  #endif
+  
+  {SYS_ "*CODE-WALKER*",NULL},
+***************
+*** 1661,1666 ****
+--- 1675,1684 ----
+  {SYS_ "CALL-CFUN","si_call_cfun"},
+  {KEY_ "CALLBACK",NULL},
+  {SYS_ "MAKE-DYNAMIC-CALLBACK","si_make_dynamic_callback"},
++ #else
++ {SYS_ "CALL-CFUN",NULL},
++ {KEY_ "CALLBACK",NULL},
++ {SYS_ "MAKE-DYNAMIC-CALLBACK",NULL},
+  #endif
+  {KEY_ "CDECL",NULL},
+  {KEY_ "STDCALL",NULL},
+***************
+*** 1687,1698 ****
+--- 1705,1724 ----
+  {SYS_ "FIND-RELATIVE-PACKAGE","si_find_relative_package"},
+  {SYS_ "PACKAGE-PARENT",NULL},
+  {SYS_ "PACKAGE-CHILDREN",NULL},
++ #else
++ {SYS_ "*RELATIVE-PACKAGE-NAMES*",NULL},
++ {KEY_ "RELATIVE-PACKAGE-NAMES",NULL},
++ {SYS_ "FIND-RELATIVE-PACKAGE",NULL},
++ {SYS_ "PACKAGE-PARENT",NULL},
++ {SYS_ "PACKAGE-CHILDREN",NULL},
+  #endif
+  
+  {SYS_ "WRONG-TYPE-ARGUMENT",NULL},
+  
+  #ifdef GBC_BOEHM
+  {SYS_ "GC-STATS","si_gc_stats"},
++ #else
++ {SYS_ "GC-STATS",NULL},
+  #endif
+  
+  {SYS_ "*CURRENT-FORM*",NULL},
+diff -rc ../ecl-11.1.1/src/clos/defclass.lsp ./src/clos/defclass.lsp
+*** ../ecl-11.1.1/src/clos/defclass.lsp	Sun Jan 16 13:39:58 2011
+--- ./src/clos/defclass.lsp	Thu May 19 16:10:48 2011
+***************
+*** 118,124 ****
+        (setf (find-class name) new-class))
+      new-class))
+  
+! #+cross
+  (eval-when (compile)
+    (defun ensure-class (name &rest initargs)
+      (warn "Ignoring definition for class ~S" name)))
+--- 118,124 ----
+        (setf (find-class name) new-class))
+      new-class))
+  
+! #+nil
+  (eval-when (compile)
+    (defun ensure-class (name &rest initargs)
+      (warn "Ignoring definition for class ~S" name)))
+diff -rc ../ecl-11.1.1/src/cmp/cmpmain.lsp ./src/cmp/cmpmain.lsp
+*** ../ecl-11.1.1/src/cmp/cmpmain.lsp	Sun Jan 16 13:39:58 2011
+--- ./src/cmp/cmpmain.lsp	Thu May 19 16:10:48 2011
+***************
+*** 307,313 ****
+  (defun system-ld-flag (library)
+    "Given a symbol, try to find a library that matches it, either by looking in the
+  filesystem or in the database of ASDF modules."
+!   (let ((asdf (find-package "ASDF"))
+          system)
+      (labels ((asdfsym (x) (find-symbol (string x) asdf))
+               (asdfcall (fun &rest rest) (apply (asdfsym fun) rest))
+--- 307,313 ----
+  (defun system-ld-flag (library)
+    "Given a symbol, try to find a library that matches it, either by looking in the
+  filesystem or in the database of ASDF modules."
+!   (let ((asdf #+asdf (find-package "ASDF"))
+          system)
+      (labels ((asdfsym (x) (find-symbol (string x) asdf))
+               (asdfcall (fun &rest rest) (apply (asdfsym fun) rest))
+Only in ./src/cmp: cmpmain.lsp.orig
+diff -rc ../ecl-11.1.1/src/configure ./src/configure
+*** ../ecl-11.1.1/src/configure	Sun Jan 16 13:39:59 2011
+--- ./src/configure	Fri May 20 00:29:52 2011
+***************
+*** 9033,9042 ****
+  
+  
+  if test "$cross_compiling" = yes; then :
+!   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+! $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+! as_fn_error $? "cannot run test program while cross compiling
+! See \`config.log' for more details" "$LINENO" 5; }
+  else
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  /* end confdefs.h.  */
+--- 9033,9039 ----
+  
+  
+  if test "$cross_compiling" = yes; then :
+!     :
+  else
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  /* end confdefs.h.  */
+***************
+*** 9189,9194 ****
+--- 9186,9195 ----
+    CLX_INFO=""
+  fi
+  
++ if test "${with_tcp}" = "builtin"; then
++     LSP_FEATURES="(cons :builtin-sockets ${LSP_FEATURES})"
++     with_tcp=yes
++ fi
+  if test "${with_tcp}" = "yes"; then
+  
+  $as_echo "#define TCP 1" >>confdefs.h
+diff -rc ../ecl-11.1.1/src/gc/darwin_stop_world.c ./src/gc/darwin_stop_world.c
+*** ../ecl-11.1.1/src/gc/darwin_stop_world.c	Sun Jan 16 13:40:00 2011
+--- ./src/gc/darwin_stop_world.c	Thu May 19 16:10:48 2011
+***************
+*** 174,179 ****
+--- 174,201 ----
+  	  GC_push_one(state . THREAD_FLD (r29));
+  	  GC_push_one(state . THREAD_FLD (r30));
+  	  GC_push_one(state . THREAD_FLD (r31));
++ 
++ #       elif defined(ARM32)
++           lo = (void*)state.__sp;
++ 
++           GC_push_one(state.__r[0]);
++           GC_push_one(state.__r[1]);
++           GC_push_one(state.__r[2]);
++           GC_push_one(state.__r[3]);
++           GC_push_one(state.__r[4]);
++           GC_push_one(state.__r[5]);
++           GC_push_one(state.__r[6]);
++           GC_push_one(state.__r[7]);
++           GC_push_one(state.__r[8]);
++           GC_push_one(state.__r[9]);
++           GC_push_one(state.__r[10]);
++           GC_push_one(state.__r[11]);
++           GC_push_one(state.__r[12]);
++           /* GC_push_one(state.__sp); */
++           GC_push_one(state.__lr);
++           GC_push_one(state.__pc);
++           GC_push_one(state.__cpsr);
++ 
+  #	else
+  #	  error FIXME for non-x86 || ppc architectures
+  #	endif
+***************
+*** 323,328 ****
+--- 345,380 ----
+  	GC_push_one(info . THREAD_FLD (fs));
+  	GC_push_one(info . THREAD_FLD (gs));
+  
++ #      elif defined(ARM32)
++         GC_THREAD_STATE_T info;
++         mach_msg_type_number_t outCount = THREAD_STATE_MAX;
++         r = thread_get_state(thread, GC_MACH_THREAD_STATE, (natural_t *)&info,
++                              &outCount);
++         if(r != KERN_SUCCESS)
++           ABORT("task_get_state failed");
++ 
++         hi = (ptr_t)FindTopOfStack(info . __sp);
++ 
++         lo = (void*)info.__sp;
++ 
++         GC_push_one(info.__r[0]);
++         GC_push_one(info.__r[1]);
++         GC_push_one(info.__r[2]);
++         GC_push_one(info.__r[3]);
++         GC_push_one(info.__r[4]);
++         GC_push_one(info.__r[5]);
++         GC_push_one(info.__r[6]);
++         GC_push_one(info.__r[7]);
++         GC_push_one(info.__r[8]);
++         GC_push_one(info.__r[9]);
++         GC_push_one(info.__r[10]);
++         GC_push_one(info.__r[11]);
++         GC_push_one(info.__r[12]);
++         /* GC_push_one(info.__sp); */
++         GC_push_one(info.__lr);
++         GC_push_one(info.__pc);
++         GC_push_one(info.__cpsr);
++ 
+  #     else
+  #	error FIXME for non-x86 || ppc architectures
+  #     endif
+diff -rc ../ecl-11.1.1/src/gc/include/private/gc_priv.h ./src/gc/include/private/gc_priv.h
+*** ../ecl-11.1.1/src/gc/include/private/gc_priv.h	Sun Jan 16 13:40:00 2011
+--- ./src/gc/include/private/gc_priv.h	Thu May 19 16:10:48 2011
+***************
+*** 401,409 ****
+  #                 define GC_GETSECTBYNAME getsectbynamefromheader_64
+  #               endif
+  #	else
+! #		error define GC_THREAD_STATE_T
+! #		define GC_MACH_THREAD_STATE MACHINE_THREAD_STATE
+! #		define GC_MACH_THREAD_STATE_COUNT MACHINE_THREAD_STATE_COUNT
+  #	endif
+  /* Try to work out the right way to access thread state structure members.
+     The structure has changed its definition in different Darwin versions.
+--- 401,413 ----
+  #                 define GC_GETSECTBYNAME getsectbynamefromheader_64
+  #               endif
+  #	else
+! #         if defined(ARM32)
+! #           define GC_THREAD_STATE_T arm_thread_state_t
+! #         else
+! #           error define GC_THREAD_STATE_T
+! #         endif
+! #         define GC_MACH_THREAD_STATE MACHINE_THREAD_STATE
+! #         define GC_MACH_THREAD_STATE_COUNT MACHINE_THREAD_STATE_COUNT
+  #	endif
+  /* Try to work out the right way to access thread state structure members.
+     The structure has changed its definition in different Darwin versions.
+diff -rc ../ecl-11.1.1/src/gc/include/private/gcconfig.h ./src/gc/include/private/gcconfig.h
+*** ../ecl-11.1.1/src/gc/include/private/gcconfig.h	Sun Jan 16 13:40:00 2011
+--- ./src/gc/include/private/gcconfig.h	Thu May 19 16:11:39 2011
+***************
+*** 61,73 ****
+  #    define FREEBSD
+  # endif
+  
+  /* Determine the machine type: */
+  # if defined(__arm__) || defined(__thumb__)
+  #    define ARM32
+! #    if !defined(LINUX) && !defined(NETBSD)
+  #      define NOSYS
+  #      define mach_type_known
+  #    endif
+  # endif
+  # if defined(sun) && defined(mc68000)
+  #    error SUNOS4 no longer supported
+--- 61,82 ----
+  #    define FREEBSD
+  # endif
+  
++ /* And one for Darwin: */
++ # if defined(macosx) || (defined(__APPLE__) && defined(__MACH__))
++ #   define DARWIN
++ # endif
++ 
+  /* Determine the machine type: */
+  # if defined(__arm__) || defined(__thumb__)
+  #    define ARM32
+! #    if !defined(LINUX) && !defined(NETBSD) && !defined(DARWIN)
+  #      define NOSYS
+  #      define mach_type_known
+  #    endif
++ #   elif defined(__arm__)
++ #    define ARM32
++ #    define mach_type_known
++ #    define DARWIN_DONT_PARSE_STACK
+  # endif
+  # if defined(sun) && defined(mc68000)
+  #    error SUNOS4 no longer supported
+***************
+*** 290,297 ****
+  #   define MACOS
+  #   define mach_type_known
+  # endif
+! # if defined(macosx) || (defined(__APPLE__) && defined(__MACH__))
+! #   define DARWIN
+  #   if defined(__ppc__)  || defined(__ppc64__)
+  #    define POWERPC
+  #    define mach_type_known
+--- 299,305 ----
+  #   define MACOS
+  #   define mach_type_known
+  # endif
+! # if defined(DARWIN)
+  #   if defined(__ppc__)  || defined(__ppc64__)
+  #    define POWERPC
+  #    define mach_type_known
+***************
+*** 301,306 ****
+--- 309,318 ----
+  #   elif defined(__i386__)
+  #    define I386
+  #    define mach_type_known
++ #   elif defined(__arm__)
++ #    define ARM32
++ #    define mach_type_known
++ #    define DARWIN_DONT_PARSE_STACK
+  #   endif
+  # endif
+  # if defined(NeXT) && defined(mc68000)
+***************
+*** 748,761 ****
+        /* HEURISTIC1 has been reliably reported to fail for a 32-bit	*/
+        /* executable on a 64 bit kernel.					*/
+  #     define LINUX_STACKBOTTOM
+! #     define DYNAMIC_LOADING
+  #     define SEARCH_FOR_DATA_START
+        extern int _end[];
+  #     define DATAEND (_end)
+  #   endif
+  #   ifdef DARWIN
+  #     define OS_TYPE "DARWIN"
+! #     define DYNAMIC_LOADING
+  #     if defined(__ppc64__)
+  #       define ALIGNMENT 8
+  #       define CPP_WORDSZ 64
+--- 760,781 ----
+        /* HEURISTIC1 has been reliably reported to fail for a 32-bit	*/
+        /* executable on a 64 bit kernel.					*/
+  #     define LINUX_STACKBOTTOM
+! #     ifdef IPHONE
+! #       undef DYNAMIC_LOADING
+! #     else
+! #       define DYNAMIC_LOADING
+! #     endif
+  #     define SEARCH_FOR_DATA_START
+        extern int _end[];
+  #     define DATAEND (_end)
+  #   endif
+  #   ifdef DARWIN
+  #     define OS_TYPE "DARWIN"
+! #     ifdef IPHONE
+! #       undef DYNAMIC_LOADING
+! #     else
+! #       define DYNAMIC_LOADING
+! #     endif
+  #     if defined(__ppc64__)
+  #       define ALIGNMENT 8
+  #       define CPP_WORDSZ 64
+***************
+*** 772,779 ****
+  	 These aren't used when dyld support is enabled (it is by default) */
+  #     define DATASTART ((ptr_t) get_etext())
+  #     define DATAEND	((ptr_t) get_end())
+! #     define USE_MMAP
+! #     define USE_MMAP_ANON
+  #     ifdef GC_DARWIN_THREADS
+  #       define MPROTECT_VDB
+  #     endif
+--- 792,804 ----
+  	 These aren't used when dyld support is enabled (it is by default) */
+  #     define DATASTART ((ptr_t) get_etext())
+  #     define DATAEND	((ptr_t) get_end())
+! #     ifdef IPHONE
+! #       undef USE_MMAP
+! #       undef USE_MMAP_ANON
+! #     else
+! #       define USE_MMAP
+! #       define USE_MMAP_ANON
+! #     endif
+  #     ifdef GC_DARWIN_THREADS
+  #       define MPROTECT_VDB
+  #     endif
+***************
+*** 831,838 ****
+  #       define CPP_WORDSZ 32
+  #       define STACKBOTTOM ((ptr_t)((ulong)&errno))
+  #     endif
+! #     define USE_MMAP
+! #     define USE_MMAP_ANON
+  	/* From AIX linker man page:
+  	_text Specifies the first location of the program.
+  	_etext Specifies the first location after the program.
+--- 856,868 ----
+  #       define CPP_WORDSZ 32
+  #       define STACKBOTTOM ((ptr_t)((ulong)&errno))
+  #     endif
+! #     ifdef IPHONE
+! #       undef USE_MMAP
+! #       undef USE_MMAP_ANON
+! #     else
+! #       define USE_MMAP
+! #       define USE_MMAP_ANON
+! #     endif
+  	/* From AIX linker man page:
+  	_text Specifies the first location of the program.
+  	_etext Specifies the first location after the program.
+***************
+*** 1282,1288 ****
+  #   ifdef DARWIN
+  #     define OS_TYPE "DARWIN"
+  #     define DARWIN_DONT_PARSE_STACK
+! #     define DYNAMIC_LOADING
+        /* XXX: see get_end(3), get_etext() and get_end() should not be used.
+  	 These aren't used when dyld support is enabled (it is by default) */
+  #     define DATASTART ((ptr_t) get_etext())
+--- 1312,1322 ----
+  #   ifdef DARWIN
+  #     define OS_TYPE "DARWIN"
+  #     define DARWIN_DONT_PARSE_STACK
+! #     ifdef IPHONE
+! #       undef DYNAMIC_LOADING
+! #     else
+! #       define DYNAMIC_LOADING
+! #     endif
+        /* XXX: see get_end(3), get_etext() and get_end() should not be used.
+  	 These aren't used when dyld support is enabled (it is by default) */
+  #     define DATASTART ((ptr_t) get_etext())
+***************
+*** 1319,1325 ****
+        /* This was developed for a linuxce style platform.  Probably	*/
+        /* needs to be tweaked for workstation class machines.		*/
+  #     define OS_TYPE "LINUX"
+! #     define DYNAMIC_LOADING
+        extern int _end[];
+  #     define DATAEND (_end)
+        extern int __data_start[];
+--- 1353,1363 ----
+        /* This was developed for a linuxce style platform.  Probably	*/
+        /* needs to be tweaked for workstation class machines.		*/
+  #     define OS_TYPE "LINUX"
+! #     ifdef IPHONE
+! #       undef DYNAMIC_LOADING
+! #     else
+! #       define DYNAMIC_LOADING
+! #     endif
+        extern int _end[];
+  #     define DATAEND (_end)
+        extern int __data_start[];
+***************
+*** 1771,1776 ****
+--- 1809,1826 ----
+  #     define OS_TYPE "MSWINCE"
+  #     define DATAEND /* not needed */
+  #   endif
++ #   ifdef DARWIN
++       /* iPhone */
++ #     define OS_TYPE "DARWIN"
++ #     define DATASTART ((ptr_t) get_etext())
++ #     define DATAEND    ((ptr_t) get_end())
++ /* #define STACKBOTTOM ((ptr_t) 0x30000000) */ /* FIXME: Is this needed? */
++ #     define HEURISTIC1
++ #     ifndef USE_MMAP
++ #       define USE_MMAP
++ #     endif
++ #     define USE_MMAP_ANON
++ #   endif
+  #   ifdef NOSYS
+        /* __data_start is usually defined in the target linker script.  */
+        extern int __data_start[];
+***************
+*** 1796,1801 ****
+--- 1846,1863 ----
+  # ifdef SH
+  #   define MACH_TYPE "SH"
+  #   define ALIGNMENT 4
++ #   ifdef DARWIN
++       /* iPhone */
++ #     define OS_TYPE "DARWIN"
++ #     define DATASTART ((ptr_t) get_etext())
++ #     define DATAEND    ((ptr_t) get_end())
++ /* #define STACKBOTTOM ((ptr_t) 0x30000000) */ /* FIXME: Is this needed? */
++ #     define HEURISTIC1
++ #     ifndef USE_MMAP
++ #       define USE_MMAP
++ #     endif
++ #     define USE_MMAP_ANON
++ #   endif
+  #   ifdef MSWINCE
+  #     define OS_TYPE "MSWINCE"
+  #     define DATAEND /* not needed */
+***************
+*** 1832,1838 ****
+  #     define LINUX_STACKBOTTOM
+  #     undef STACK_GRAN
+  #     define STACK_GRAN 0x10000000
+! #     define DYNAMIC_LOADING
+  #     define SEARCH_FOR_DATA_START
+        extern int _end[];
+  #     define DATAEND (_end)
+--- 1894,1904 ----
+  #     define LINUX_STACKBOTTOM
+  #     undef STACK_GRAN
+  #     define STACK_GRAN 0x10000000
+! #     ifdef IPHONE
+! #       undef DYNAMIC_LOADING
+! #     else
+! #       define DYNAMIC_LOADING
+! #     endif
+  #     define SEARCH_FOR_DATA_START
+        extern int _end[];
+  #     define DATAEND (_end)
+***************
+*** 1879,1885 ****
+  #   ifdef DARWIN
+  #     define OS_TYPE "DARWIN"
+  #     define DARWIN_DONT_PARSE_STACK
+! #     define DYNAMIC_LOADING
+        /* XXX: see get_end(3), get_etext() and get_end() should not be used.
+  	 These aren't used when dyld support is enabled (it is by default) */
+  #     define DATASTART ((ptr_t) get_etext())
+--- 1945,1955 ----
+  #   ifdef DARWIN
+  #     define OS_TYPE "DARWIN"
+  #     define DARWIN_DONT_PARSE_STACK
+! #     ifdef IPHONE
+! #       undef DYNAMIC_LOADING
+! #     else
+! #       define DYNAMIC_LOADING
+! #     endif
+        /* XXX: see get_end(3), get_etext() and get_end() should not be used.
+  	 These aren't used when dyld support is enabled (it is by default) */
+  #     define DATASTART ((ptr_t) get_etext())
+Only in ./src/gc/include/private: gcconfig.h.orig
+Only in ./src/gc/include/private: gcconfig.h.rej
+diff -rc ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h
+*** ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Sun Jan 16 13:40:00 2011
+--- ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Fri May 20 00:01:52 2011
+***************
+*** 32,41 ****
+  */
+  
+  /* NEC LE-IT: gcc has no way to easily check the arm architecture
+!  * but defines only one of __ARM_ARCH_x__ to be true			*/
+! #if defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_7__)  
+  AO_INLINE void
+! AO_nop_full()
+  {
+  #ifndef AO_UNIPROCESSOR
+  	/* issue an data memory barrier (keeps ordering of memory transactions 	*/
+--- 32,47 ----
+  */
+  
+  /* NEC LE-IT: gcc has no way to easily check the arm architecture
+!  * but defines only one of __ARM_ARCH_x__ to be true                    */
+! #if defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) \
+!         || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6ZK__) \
+!         || defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) \
+!         || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7R__)
+! 
+! #include "../standard_ao_double_t.h"
+! 
+  AO_INLINE void
+! AO_nop_full(void)
+  {
+  #ifndef AO_UNIPROCESSOR
+  	/* issue an data memory barrier (keeps ordering of memory transactions 	*/
+***************
+*** 49,59 ****
+  
+  /* NEC LE-IT: AO_t load is simple reading */
+  AO_INLINE AO_t
+! AO_load(volatile AO_t *addr)
+  {
+!   /* Cast away the volatile for architectures like IA64 where	*/
+!   /* volatile adds barrier semantics.				*/
+!   return (*(AO_t *)addr);
+  }
+  #define AO_HAVE_load
+  
+--- 55,65 ----
+  
+  /* NEC LE-IT: AO_t load is simple reading */
+  AO_INLINE AO_t
+! AO_load(const volatile AO_t *addr)
+  {
+!   /* Cast away the volatile for architectures like IA64 where   */
+!   /* volatile adds barrier semantics.                           */
+!   return (*(const AO_t *)addr);
+  }
+  #define AO_HAVE_load
+  
+***************
+*** 84,99 ****
+  */
+  AO_INLINE void AO_store(volatile AO_t *addr, AO_t value)
+  {
+! 	unsigned long tmp;
+  
+! 	__asm__ __volatile__("@AO_store\n"
+! "1:	ldrex	%0, [%1]\n"
+! "	strex	%0, %2, [%1]\n"
+! "	teq	%0, #0\n"
+! "	bne	1b"
+! 	: "=&r"(tmp)
+! 	: "r" (addr), "r"(value)
+! 	: "cc","memory");
+  }
+  #define AO_HAVE_store
+  
+--- 90,105 ----
+  */
+  AO_INLINE void AO_store(volatile AO_t *addr, AO_t value)
+  {
+!         AO_t    flag;
+  
+!         __asm__ __volatile__("@AO_store\n"
+! "1:     ldrex   %0, [%2]\n"
+! "       strex   %0, %3, [%2]\n"
+! "       teq     %0, #0\n"
+! "       bne     1b"
+!         : "=&r"(flag), "+m"(*addr)
+!         : "r" (addr), "r"(value)
+!         : "cc");
+  }
+  #define AO_HAVE_store
+  
+***************
+*** 111,130 ****
+  */
+  AO_INLINE AO_TS_t
+  AO_test_and_set(volatile AO_TS_t *addr) {
+- 	
+- 	AO_TS_t oldval;
+- 	unsigned long tmp;
+- 
+- 	__asm__ __volatile__("@AO_test_and_set\n"
+- "1:	ldrex	%0, [%2]\n"
+- "	strex	%1, %3, [%2]\n"
+- "	teq	%1, #0\n"
+- "	bne	1b\n"
+- 	: "=&r"(oldval),"=&r"(tmp)
+- 	: "r"(addr), "r"(1)
+- 	: "memory","cc");
+  
+! 	return oldval;
+  }
+  
+  #define AO_HAVE_test_and_set
+--- 117,136 ----
+  */
+  AO_INLINE AO_TS_t
+  AO_test_and_set(volatile AO_TS_t *addr) {
+  
+!         AO_TS_t oldval;
+!         unsigned long flag;
+! 
+!         __asm__ __volatile__("@AO_test_and_set\n"
+! "1:     ldrex   %0, [%3]\n"
+! "       strex   %1, %4, [%3]\n"
+! "       teq             %1, #0\n"
+! "       bne             1b\n"
+!         : "=&r"(oldval),"=&r"(flag), "+m"(*addr)
+!         : "r"(addr), "r"(1)
+!         : "cc");
+! 
+!         return oldval;
+  }
+  
+  #define AO_HAVE_test_and_set
+***************
+*** 133,152 ****
+  AO_INLINE AO_t
+  AO_fetch_and_add(volatile AO_t *p, AO_t incr)
+  {
+! 	unsigned long tmp,tmp2;
+! 	AO_t result;
+  
+! 	__asm__ __volatile__("@AO_fetch_and_add\n"
+! "1:	ldrex	%0, [%4]\n"			/* get original			  */
+! "	add     %2, %3, %0\n"		/* sum up */
+! "	strex	%1, %2, [%4]\n"		/* store them */
+! "	teq	%1, #0\n"
+! "	bne	1b\n"
+! 	: "=&r"(result),"=&r"(tmp),"=&r"(tmp2)
+! 	: "r"(incr), "r"(p)
+! 	: "cc","memory");
+  
+! 	return result;
+  }
+  
+  #define AO_HAVE_fetch_and_add
+--- 139,158 ----
+  AO_INLINE AO_t
+  AO_fetch_and_add(volatile AO_t *p, AO_t incr)
+  {
+!         unsigned long flag,tmp;
+!         AO_t result;
+  
+!         __asm__ __volatile__("@AO_fetch_and_add\n"
+! "1:     ldrex   %0, [%5]\n"                     /* get original         */
+! "       add     %2, %0, %4\n"           /* sum up in incr       */
+! "       strex   %1, %2, [%5]\n"         /* store them           */
+! "       teq             %1, #0\n"
+! "       bne             1b\n"
+!         : "=&r"(result),"=&r"(flag),"=&r"(tmp),"+m"(*p) /* 0..3 */
+!         : "r"(incr), "r"(p)                                                             /* 4..5 */
+!         : "cc");
+  
+!         return result;
+  }
+  
+  #define AO_HAVE_fetch_and_add
+***************
+*** 155,174 ****
+  AO_INLINE AO_t
+  AO_fetch_and_add1(volatile AO_t *p)
+  {
+! 	unsigned long tmp,tmp2;
+! 	AO_t result;
+  
+! 	__asm__ __volatile__("@AO_fetch_and_add1\n"
+! "1:	ldrex	%0, [%3]\n"			/* get original	  */
+! "	add     %1, %0, #1\n"		/* increment */
+! "	strex	%2, %1, [%3]\n"		/* store them */
+! "	teq	%2, #0\n"
+! "	bne	1b\n"
+! 	: "=&r"(result), "=&r"(tmp), "=&r"(tmp2)
+! 	: "r"(p)
+! 	: "cc","memory");
+  
+! 	return result;
+  }
+  
+  #define AO_HAVE_fetch_and_add1
+--- 161,180 ----
+  AO_INLINE AO_t
+  AO_fetch_and_add1(volatile AO_t *p)
+  {
+!         unsigned long flag,tmp;
+!         AO_t result;
+  
+!         __asm__ __volatile__("@AO_fetch_and_add1\n"
+! "1:     ldrex   %0, [%4]\n"                     /* get original   */
+! "       add     %1, %0, #1\n"           /* increment */
+! "       strex   %2, %1, [%4]\n"         /* store them */
+! "       teq             %2, #0\n"
+! "       bne             1b\n"
+!         : "=&r"(result), "=&r"(tmp), "=&r"(flag), "+m"(*p)
+!         : "r"(p)
+!         : "cc");
+  
+!         return result;
+  }
+  
+  #define AO_HAVE_fetch_and_add1
+***************
+*** 177,196 ****
+  AO_INLINE AO_t
+  AO_fetch_and_sub1(volatile AO_t *p)
+  {
+! 	unsigned long tmp,tmp2;
+! 	AO_t result;
+  
+! 	__asm__ __volatile__("@ AO_fetch_and_sub1\n"
+! "1:	ldrex	%0, [%3]\n"			/* get original	  */
+! "	sub     %1, %0, #1\n"		/* increment */
+! "	strex	%2, %1, [%3]\n"		/* store them */
+! "	teq	%2, #0\n"
+! "	bne	1b\n"
+! 	: "=&r"(result), "=&r"(tmp), "=&r"(tmp2)
+! 	: "r"(p)
+! 	: "cc","memory");
+  
+! 	return result;
+  }
+  
+  #define AO_HAVE_fetch_and_sub1
+--- 183,202 ----
+  AO_INLINE AO_t
+  AO_fetch_and_sub1(volatile AO_t *p)
+  {
+!         unsigned long flag,tmp;
+!         AO_t result;
+  
+!         __asm__ __volatile__("@AO_fetch_and_sub1\n"
+! "1:     ldrex   %0, [%4]\n"                     /* get original   */
+! "       sub     %1, %0, #1\n"           /* decrement */
+! "       strex   %2, %1, [%4]\n"         /* store them */
+! "       teq             %2, #0\n"
+! "       bne             1b\n"
+!         : "=&r"(result), "=&r"(tmp), "=&r"(flag), "+m"(*p)
+!         : "r"(p)
+!         : "cc");
+  
+!         return result;
+  }
+  
+  #define AO_HAVE_fetch_and_sub1
+***************
+*** 199,224 ****
+  /* Returns nonzero if the comparison succeeded. */
+  AO_INLINE int
+  AO_compare_and_swap(volatile AO_t *addr,
+! 		  	     	AO_t old_val, AO_t new_val) 
+  {
+!   	 AO_t result,tmp;
+  
+! 	__asm__ __volatile__("@ AO_compare_and_swap\n"
+! "1:	ldrex	%1, [%2]\n"			/* get original	*/
+! "	mov		%0, #2\n"			/* store a flag */
+! "	teq		%1, %3\n"			/* see if match */
+! "	strexeq	%0, %4, [%2]\n"		/* store new one if matched */
+! "	teq		%0, #1\n"
+! "	beq		1b\n"				/* if update failed, repeat */
+! "	eor		%0, %0, #2\n"		/* if succeded, return 2, else 0 */
+! 	: "=&r"(result), "=&r"(tmp)
+! 	: "r"(addr), "r"(old_val), "r"(new_val)
+! 	: "cc","memory");
+  
+! 	return (result>>1);
+  }
+  #define AO_HAVE_compare_and_swap
+  
+  #else
+  /* pre ARMv6 architecures ... */
+   
+--- 205,261 ----
+  /* Returns nonzero if the comparison succeeded. */
+  AO_INLINE int
+  AO_compare_and_swap(volatile AO_t *addr,
+!                                 AO_t old_val, AO_t new_val)
+  {
+!          AO_t result,tmp;
+  
+!         __asm__ __volatile__("@ AO_compare_and_swap\n"
+! "1:     mov             %0, #2\n"       /* store a flag */
+! "       ldrex   %1, [%3]\n"             /* get original */
+! "       teq             %1, %4\n"       /* see if match */
+! #       ifdef __thumb__
+!   "       it            eq\n"
+! #       endif
+! "       strexeq %0, %5, [%3]\n"         /* store new one if matched */
+! "       teq             %0, #1\n"
+! "       beq             1b\n"                           /* if update failed, repeat */
+!         : "=&r"(result), "=&r"(tmp), "+m"(*addr)
+!         : "r"(addr), "r"(old_val), "r"(new_val)
+!         : "cc");
+  
+!         return !(result&2);                     /* if succeded, return 1, else 0 */
+  }
+  #define AO_HAVE_compare_and_swap
+  
++ AO_INLINE int
++ AO_compare_double_and_swap_double(volatile AO_double_t *addr,
++                                                           AO_t old_val1, AO_t old_val2,
++                                                           AO_t new_val1, AO_t new_val2)
++ {
++         double_ptr_storage old_val = ((double_ptr_storage)old_val2 << 32) | old_val1;
++         double_ptr_storage new_val = ((double_ptr_storage)new_val2 << 32) | new_val1;
++ 
++     double_ptr_storage tmp;
++         int result;
++ 
++         while(1) {
++                 __asm__ __volatile__("@ AO_compare_and_swap_double\n"
++                 "       ldrex  %0, [%1]\n"                     /* get original to r1&r2*/
++                         : "=&r"(tmp)
++                         : "r"(addr)
++                         : "cc");
++                 if(tmp != old_val)      return 0;
++                 __asm__ __volatile__(
++                 "       strex  %0, %2, [%3]\n" /* store new one if matched */
++                         : "=&r"(result),"+m"(*addr)
++                         : "r"(new_val), "r"(addr)
++                         : "cc");
++                 if(!result)     return 1;
++         }
++ }
++ 
++ #define AO_HAVE_compare_double_and_swap_double
++ 
+  #else
+  /* pre ARMv6 architecures ... */
+   
+Only in ./src/gc/libatomic_ops-1.2/src: atomic_ops_stack.i
+diff -rc ../ecl-11.1.1/src/gmp/mpn/arm/invert_limb.asm ./src/gmp/mpn/arm/invert_limb.asm
+*** ../ecl-11.1.1/src/gmp/mpn/arm/invert_limb.asm	Sun Jan 16 13:40:00 2011
+--- ./src/gmp/mpn/arm/invert_limb.asm	Thu May 19 16:10:48 2011
+***************
+*** 6,12 ****
+  
+  dnl  The GNU MP Library is free software; you can redistribute it and/or modify
+  dnl  it under the terms of the GNU Lesser General Public License as published
+! dnl  by the Free Software Foundation; either version 2.1 of the License, or (at
+  dnl  your option) any later version.
+  
+  dnl  The GNU MP Library is distributed in the hope that it will be useful, but
+--- 6,12 ----
+  
+  dnl  The GNU MP Library is free software; you can redistribute it and/or modify
+  dnl  it under the terms of the GNU Lesser General Public License as published
+! dnl  by the Free Software Foundation; either version 3 of the License, or (at
+  dnl  your option) any later version.
+  
+  dnl  The GNU MP Library is distributed in the hope that it will be useful, but
+***************
+*** 15,97 ****
+  dnl  License for more details.
+  
+  dnl  You should have received a copy of the GNU Lesser General Public License
+! dnl  along with the GNU MP Library; see the file COPYING.LIB.  If not, write
+! dnl  to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+! dnl  Boston, MA 02110-1301, USA.
+  
+  include(`../config.m4')
+  
+! C INPUT PARAMETERS
+! define(`d',`r0')	C number to be inverted
+! 
+  
+  PROLOGUE(mpn_invert_limb)
+! 	stmfd	sp!, {r4, lr}
+! 	mov	r3, d, lsr #23
+! 	sub	r3, r3, #256
+! 	add	r2, pc, #invtab-.-8
+! 	mov	r3, r3, lsl #1
+! 	ldrh	r1, [r2, r3]		C get initial approximation from table
+! 	mov	r2, r1, lsl #6		C start iteration 1
+! 	mul	ip, r2, r2
+! 	umull	lr, r4, ip, d
+! 	mov	r2, r4, lsl #1
+! 	rsb	r2, r2, r1, lsl #23	C iteration 1 complete
+! 	umull	ip, r3, r2, r2		C start iteration 2
+! 	umull	lr, r4, r3, d
+! 	umull	r3, r1, ip, d
+! 	adds	lr, lr, r1
+! 	addcs	r4, r4, #1
+! 	mov	r3, lr, lsr #30
+! 	orr	r4, r3, r4, lsl #2
+! 	mov	lr, lr, lsl #2
+! 	cmn	lr, #1
+! 	rsc	r2, r4, r2, lsl #2	C iteration 2 complete
+! 	umull	ip, r1, d, r2		C start adjustment step
+! 	add	r1, r1, d
+! 	cmn	r1, #1
+! 	beq	L(1)
+! 	adds	ip, ip, d
+! 	adc	r1, r1, #0
+! 	add	r2, r2, #1
+! L(1):
+! 	adds	r3, ip, d
+! 	adcs	r1, r1, #0
+! 	moveq	r0, r2
+! 	addne	r0, r2, #1
+! 	ldmfd	sp!, {r4, pc}
+! 
+! invtab:
+! 	.short	1023,1020,1016,1012,1008,1004,1000,996
+! 	.short	992,989,985,981,978,974,970,967
+! 	.short	963,960,956,953,949,946,942,939
+! 	.short	936,932,929,926,923,919,916,913
+! 	.short	910,907,903,900,897,894,891,888
+! 	.short	885,882,879,876,873,870,868,865
+! 	.short	862,859,856,853,851,848,845,842
+! 	.short	840,837,834,832,829,826,824,821
+! 	.short	819,816,814,811,809,806,804,801
+! 	.short	799,796,794,791,789,787,784,782
+! 	.short	780,777,775,773,771,768,766,764
+! 	.short	762,759,757,755,753,751,748,746
+! 	.short	744,742,740,738,736,734,732,730
+! 	.short	728,726,724,722,720,718,716,714
+! 	.short	712,710,708,706,704,702,700,699
+! 	.short	697,695,693,691,689,688,686,684
+! 	.short	682,680,679,677,675,673,672,670
+! 	.short	668,667,665,663,661,660,658,657
+! 	.short	655,653,652,650,648,647,645,644
+! 	.short	642,640,639,637,636,634,633,631
+! 	.short	630,628,627,625,624,622,621,619
+! 	.short	618,616,615,613,612,611,609,608
+! 	.short	606,605,604,602,601,599,598,597
+! 	.short	595,594,593,591,590,589,587,586
+! 	.short	585,583,582,581,579,578,577,576
+! 	.short	574,573,572,571,569,568,567,566
+! 	.short	564,563,562,561,560,558,557,556
+! 	.short	555,554,553,551,550,549,548,547
+! 	.short	546,544,543,542,541,540,539,538
+! 	.short	537,536,534,533,532,531,530,529
+! 	.short	528,527,526,525,524,523,522,521
+! 	.short	520,519,518,517,516,515,514,513
+! EPILOGUE(mpn_invert_limb)
+--- 15,90 ----
+  dnl  License for more details.
+  
+  dnl  You should have received a copy of the GNU Lesser General Public License
+! dnl  along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.
+  
+  include(`../config.m4')
+  
+! ifdef(`APPLE',
+! `define(`RODATA',`.const')',
+! `define(`RODATA',`.section .rodata')')
+  
++ ASM_START()
+  PROLOGUE(mpn_invert_limb)
+! 	ldr	r2, L(4)
+! L(2):	add	r2, pc, r2
+! 	mov	r3, r0, lsr #23
+! 	mov	r3, r3, asl #1
+! 	ldrh	r3, [r3, r2]
+! 	mov	r1, r3, asl #17
+! 	mul	r3, r3, r3
+! 	umull	r12, r2, r3, r0
+! 	sub	r1, r1, r2, asl #1
+! 	umull	r12, r2, r1, r1
+! 	umull	r3, r12, r0, r12
+! 	umull	r2, r3, r0, r2
+! 	adds	r2, r2, r12
+! 	adc	r3, r3, #0
+! 	rsb	r1, r3, r1
+! 	mvn	r2, r2, lsr #30
+! 	add	r2, r2, r1, asl #2
+! 	umull	r3, r12, r0, r2
+! 	adds	r1, r3, r0
+! 	adc	r12, r12, r0
+! 	rsb	r0, r12, r2
+! 	bx	lr
+! 
+! 	ALIGN(4)
+! L(4):	.word	approx_tab-8-512-L(2)
+! EPILOGUE()
+! 
+! 	RODATA
+! 	ALIGN(2)
+! approx_tab:
+! 	.short    0xffc0,0xfec0,0xfdc0,0xfcc0,0xfbc0,0xfac0,0xfa00,0xf900
+! 	.short    0xf800,0xf700,0xf640,0xf540,0xf440,0xf380,0xf280,0xf180
+! 	.short    0xf0c0,0xefc0,0xef00,0xee00,0xed40,0xec40,0xeb80,0xeac0
+! 	.short    0xe9c0,0xe900,0xe840,0xe740,0xe680,0xe5c0,0xe500,0xe400
+! 	.short    0xe340,0xe280,0xe1c0,0xe100,0xe040,0xdf80,0xdec0,0xde00
+! 	.short    0xdd40,0xdc80,0xdbc0,0xdb00,0xda40,0xd980,0xd8c0,0xd800
+! 	.short    0xd740,0xd680,0xd600,0xd540,0xd480,0xd3c0,0xd340,0xd280
+! 	.short    0xd1c0,0xd140,0xd080,0xcfc0,0xcf40,0xce80,0xcdc0,0xcd40
+! 	.short    0xcc80,0xcc00,0xcb40,0xcac0,0xca00,0xc980,0xc8c0,0xc840
+! 	.short    0xc780,0xc700,0xc640,0xc5c0,0xc540,0xc480,0xc400,0xc380
+! 	.short    0xc2c0,0xc240,0xc1c0,0xc100,0xc080,0xc000,0xbf80,0xbec0
+! 	.short    0xbe40,0xbdc0,0xbd40,0xbc80,0xbc00,0xbb80,0xbb00,0xba80
+! 	.short    0xba00,0xb980,0xb900,0xb840,0xb7c0,0xb740,0xb6c0,0xb640
+! 	.short    0xb5c0,0xb540,0xb4c0,0xb440,0xb3c0,0xb340,0xb2c0,0xb240
+! 	.short    0xb1c0,0xb140,0xb0c0,0xb080,0xb000,0xaf80,0xaf00,0xae80
+! 	.short    0xae00,0xad80,0xad40,0xacc0,0xac40,0xabc0,0xab40,0xaac0
+! 	.short    0xaa80,0xaa00,0xa980,0xa900,0xa8c0,0xa840,0xa7c0,0xa740
+! 	.short    0xa700,0xa680,0xa600,0xa5c0,0xa540,0xa4c0,0xa480,0xa400
+! 	.short    0xa380,0xa340,0xa2c0,0xa240,0xa200,0xa180,0xa140,0xa0c0
+! 	.short    0xa080,0xa000,0x9f80,0x9f40,0x9ec0,0x9e80,0x9e00,0x9dc0
+! 	.short    0x9d40,0x9d00,0x9c80,0x9c40,0x9bc0,0x9b80,0x9b00,0x9ac0
+! 	.short    0x9a40,0x9a00,0x9980,0x9940,0x98c0,0x9880,0x9840,0x97c0
+! 	.short    0x9780,0x9700,0x96c0,0x9680,0x9600,0x95c0,0x9580,0x9500
+! 	.short    0x94c0,0x9440,0x9400,0x93c0,0x9340,0x9300,0x92c0,0x9240
+! 	.short    0x9200,0x91c0,0x9180,0x9100,0x90c0,0x9080,0x9000,0x8fc0
+! 	.short    0x8f80,0x8f40,0x8ec0,0x8e80,0x8e40,0x8e00,0x8d80,0x8d40
+! 	.short    0x8d00,0x8cc0,0x8c80,0x8c00,0x8bc0,0x8b80,0x8b40,0x8b00
+! 	.short    0x8a80,0x8a40,0x8a00,0x89c0,0x8980,0x8940,0x88c0,0x8880
+! 	.short    0x8840,0x8800,0x87c0,0x8780,0x8740,0x8700,0x8680,0x8640
+! 	.short    0x8600,0x85c0,0x8580,0x8540,0x8500,0x84c0,0x8480,0x8440
+! 	.short    0x8400,0x8380,0x8340,0x8300,0x82c0,0x8280,0x8240,0x8200
+! 	.short    0x81c0,0x8180,0x8140,0x8100,0x80c0,0x8080,0x8040,0x8000
+! ASM_END()
+diff -rc ../ecl-11.1.1/src/lsp/predlib.lsp ./src/lsp/predlib.lsp
+*** ../ecl-11.1.1/src/lsp/predlib.lsp	Sun Jan 16 13:40:02 2011
+--- ./src/lsp/predlib.lsp	Fri May 20 10:50:41 2011
+***************
+*** 39,45 ****
+    (si:fill-array-with-elt *upgraded-array-element-type-cache* nil 0 nil))
+  
+  (defun create-type-name (name)
+!   (when (member name *alien-declarations*)
+      (error "Symbol ~s is a declaration specifier and cannot be used to name a new type" name)))
+  
+  (defun do-deftype (name form function)
+--- 39,45 ----
+    (si:fill-array-with-elt *upgraded-array-element-type-cache* nil 0 nil))
+  
+  (defun create-type-name (name)
+!   (when (and (boundp '*alien-declarations*) (member name *alien-declarations*))
+      (error "Symbol ~s is a declaration specifier and cannot be used to name a new type" name)))
+  
+  (defun do-deftype (name form function)
