@@ -272,12 +272,19 @@
     (set-font view (or font (system-font 24.0)))
     (set-text-color view (or text-color (color-argb 1 0 0 0)))
     (when number-of-lines (set-number-of-lines view number-of-lines))
-    view));;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; COCOA(defpackage :cocoa  (:export    :show-alert))
+    view))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; COCOA
+
+(defpackage :cocoa
+  (:export
+   :show-alert))
 
 (defun cocoa::show-alert (title &key message (dismiss-label "OK"))
   "Displays a simple alert to notify the user"
   (check-type title string)
-  (check-type dismiss-label string)  (flet ((ui-alert-view ()
+  (check-type dismiss-label string)
+  (flet ((ui-alert-view ()
            (c-fficall (((make-NSString title) :pointer-void)
                        ((make-NSString message) :pointer-void)
                        ((make-NSString dismiss-label) :pointer-void)) :void
@@ -288,5 +295,6 @@
       cancelButtonTitle: #2
       otherButtonTitles: nil];
      [alert show];
-     [alert release];}")))  (mp:process-run-function "alert" #'ui-alert-view)))      
+     [alert release];}")))
+  (mp:process-run-function "alert" #'ui-alert-view)))
 
