@@ -5,7 +5,7 @@ ecl_root = /opt/ecl-ios
 host_ecl = $(ecl_root)/host
 
 module = eclffi
-sources = "util.lisp" "$(module).lisp"
+sources = "util.lisp" "$(module).lisp" "cocoa.lisp"
 
 # Note: the trailing slash on the :ecl-root keyword arg to `build-all'
 # is required for Lisp pathnames to work right
