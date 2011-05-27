@@ -5,7 +5,6 @@
   (subseq str 0 (if length (min (length str) length))))
 
 (defun ipadp () (equal (safe-substr (machine-type) 0 4) "iPad"))
-(when (ipadp) (set-frame (key-window) '(0 0 768 1024)))
 
 (defvar *label* nil)
 
@@ -17,10 +16,10 @@
 
 (let ((n 0)
       (click-label (make-label "")))
-  (set-frame click-label '(10 90 300 35))
+  (set-frame click-label '(120 90 300 35))
   (add-subview (key-window) click-label)
   (add-subview (key-window)
-               (make-button :frame '(140 230 100 40)
+               (make-button :frame '(10 90 100 40)
                             :title "tap"
                             :background-color (color-argb 1 0.5 0.5 0.5)
                             :on-click (lambda (button)
@@ -53,7 +52,7 @@ User home:~20t~a~%Current directory:~20t~a~%Default pathname:~20t~a~%"
   (format out "Features: ~s.
 Modules:~s.~%
 Current package:~s~%"
-           *features* *modules* *package*)
+          *features* *modules* *package*)
   (flet ((exdi (fl) (integer-length (nth-value 1 (decode-float fl)))))
     (format out "Fixnum length:~25t~3d bits
 Short Floats:~25t~3d bits exponent, ~3d bits significand (mantissa)
@@ -116,15 +115,15 @@ Current time:~25t" (/ internal-time-units-per-second) *gensym-counter*)
               (set-text *label*
                         (format nil "slime: ~a:~a~%"
                                 address port))
-              (cocoa::show-alert "Swank Ready" 
-               :message (format nil "Connect to ~a:~a from MCLIDE or SLIME." 
+              (cocoa:show-alert
+               "Swank Ready" 
+               :message (format nil "Connect to ~a:~a from MCLIDE or SLIME."
                                 address port))))
        (cond
-        ((string-equal (safe-substr (machine-type) 0 2) "iP")
-         (let ((swank::*loopback-interface* (get-ip-address-string)))
-           (swank:create-server :port swank-port :dont-close t)
-           (notify-user swank::*loopback-interface* swank-port)))
-        (t
-         (swank:create-server :port swank-port :dont-close t)
-         (notify-user "127.0.0.1" swank-port)))))))
-
+         ((string-equal (safe-substr (machine-type) 0 2) "iP")
+          (let ((swank::*loopback-interface* (get-ip-address-string)))
+            (swank:create-server :port swank-port :dont-close t)
+            (notify-user swank::*loopback-interface* swank-port)))
+         (t
+          (swank:create-server :port swank-port :dont-close t)
+          (notify-user "127.0.0.1" swank-port)))))))
