@@ -9,6 +9,7 @@ iphone_sdk_ver=4.3
 clean=no
 build_debug=no
 enable_threads=yes
+devtools_root=/Developer
 host_config_opts="\
 	--disable-longdouble \
 	--enable-unicode \
@@ -114,7 +115,7 @@ host()
 simulator()
 {
     ensure_build_dir build.simulator
-    export SDK=/Developer/Platforms/iPhoneSimulator.platform/Developer
+    export SDK=${devtools_root}/Platforms/iPhoneSimulator.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneSimulator${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/$CC_bin"
     int_sdk_ver=$(echo "(${iphone_sdk_ver} * 100)/1"|bc)
@@ -230,7 +231,7 @@ device()
     ensure_build_dir build.$arch
     prefix=$install_root/${arch}
     ecl_root=$install_root/host
-    export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
+    export SDK=${devtools_root}/Platforms/iPhoneOS.platform/Developer
     export SDKROOT=$SDK/SDKs/iPhoneOS${iphone_sdk_ver}.sdk
     export CC="$SDK/usr/bin/$CC_bin"
     export CFLAGS=$(echo -g -arch ${arch} -I$SDKROOT/usr/include \
@@ -249,7 +250,7 @@ lipo()
     arm7lib=$2
     i386lib=$3
     lipolib=$4
-    export SDK=/Developer/Platforms/iPhoneOS.platform/Developer
+    export SDK=${devtools_root}/Platforms/iPhoneOS.platform/Developer
     $SDK/usr/bin/lipo -arch armv6 $arm6lib -arch armv7 $arm7lib -arch i386 $i386lib -create -output $lipolib
 }
 
@@ -278,7 +279,7 @@ usage()
     echo " sdk-ver -- the sdk version to use [$iphone_sdk_ver]"
 }
 
-while getopts 'a:d:v:t:cx' o; do
+while getopts 'a:d:v:t:r:cx' o; do
 case "$o" in
     a) arch="$OPTARG";;
     d) install_root="$OPTARG";;
@@ -286,6 +287,7 @@ case "$o" in
     t) target="$OPTARG";;
     c) clean=yes;;
     x) build_debug=yes;;
+    r) devtools_root="$OPTARG";;
     ?) usage
     esac
 done
