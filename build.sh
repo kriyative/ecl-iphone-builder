@@ -4,6 +4,7 @@
 ## simulator and device. The universal option will build fat libs from
 ## the simulator and device builds.
 ##
+install_root=
 target=simulator
 iphone_sdk_ver=4.3
 clean=no
@@ -272,11 +273,15 @@ universal()
 
 usage()
 {
-    echo "Usage: `basename $0` [-d <dir>] [-t <target>] [-c] [-v <sdk-ver>]"
+    echo "Usage: `basename $0` [-a arch] [-d <dir>] [-t <target>] [-c] [-v <sdk-ver>] [-r <dir>]"
     echo ""
-    echo " dir     -- prefix directory where ecl will be installed [$install_root]"
-    echo " target  -- one of: host, simulator, device [$target]"
-    echo " sdk-ver -- the sdk version to use [$iphone_sdk_ver]"
+    echo " -a arch     -- one of: armv6, armv7, when target == device"
+    echo " -c          -- force a 'make distclean' before building target"
+    echo " -d dir      -- prefix directory where ecl will be installed"
+    echo " -r dir      -- the install root of the developer tools [$devtools_root]"
+    echo " -t target   -- one of: host, simulator, device [$target]"
+    echo " -v sdk-ver  -- the sdk version to use [$iphone_sdk_ver]"
+    echo ""
 }
 
 while getopts 'a:d:v:t:r:cx' o; do
@@ -293,8 +298,13 @@ case "$o" in
 done
 shift $(($OPTIND - 1))
 
-echo "Installing in $install_root"
-[ -d $install_root ] || mkdir -p $install_root
+if [ "$install_root" = "" ]; then
+    usage
+    exit 1
+else
+    echo "Installing in $install_root"
+    [ -d $install_root ] || mkdir -p $install_root
+fi
 
 case "$target" in
     device)
