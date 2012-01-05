@@ -1,6 +1,6 @@
 diff -rc ../ecl-11.1.1/src/c/symbols_list.h ./src/c/symbols_list.h
 *** ../ecl-11.1.1/src/c/symbols_list.h	Sun Jan 16 13:39:57 2011
---- ./src/c/symbols_list.h	Fri May 20 12:25:45 2011
+--- ./src/c/symbols_list.h	Thu Jan  5 07:06:11 2012
 ***************
 *** 1154,1159 ****
 --- 1154,1161 ----
@@ -107,7 +107,7 @@ diff -rc ../ecl-11.1.1/src/c/symbols_list.h ./src/c/symbols_list.h
   {SYS_ "*CURRENT-FORM*", SI_SPECIAL, NULL, -1, OBJNULL},
 diff -rc ../ecl-11.1.1/src/c/symbols_list2.h ./src/c/symbols_list2.h
 *** ../ecl-11.1.1/src/c/symbols_list2.h	Sun Jan 16 13:39:57 2011
---- ./src/c/symbols_list2.h	Fri May 20 12:43:42 2011
+--- ./src/c/symbols_list2.h	Thu Jan  5 07:41:38 2012
 ***************
 *** 1154,1159 ****
 --- 1154,1161 ----
@@ -214,7 +214,7 @@ diff -rc ../ecl-11.1.1/src/c/symbols_list2.h ./src/c/symbols_list2.h
   {SYS_ "*CURRENT-FORM*",NULL},
 diff -rc ../ecl-11.1.1/src/clos/defclass.lsp ./src/clos/defclass.lsp
 *** ../ecl-11.1.1/src/clos/defclass.lsp	Sun Jan 16 13:39:58 2011
---- ./src/clos/defclass.lsp	Thu May 19 16:10:48 2011
+--- ./src/clos/defclass.lsp	Thu Jan  5 07:06:11 2012
 ***************
 *** 118,124 ****
         (setf (find-class name) new-class))
@@ -234,7 +234,7 @@ diff -rc ../ecl-11.1.1/src/clos/defclass.lsp ./src/clos/defclass.lsp
       (warn "Ignoring definition for class ~S" name)))
 diff -rc ../ecl-11.1.1/src/cmp/cmpmain.lsp ./src/cmp/cmpmain.lsp
 *** ../ecl-11.1.1/src/cmp/cmpmain.lsp	Sun Jan 16 13:39:58 2011
---- ./src/cmp/cmpmain.lsp	Thu May 19 16:10:48 2011
+--- ./src/cmp/cmpmain.lsp	Thu Jan  5 07:06:11 2012
 ***************
 *** 307,313 ****
   (defun system-ld-flag (library)
@@ -252,10 +252,9 @@ diff -rc ../ecl-11.1.1/src/cmp/cmpmain.lsp ./src/cmp/cmpmain.lsp
           system)
       (labels ((asdfsym (x) (find-symbol (string x) asdf))
                (asdfcall (fun &rest rest) (apply (asdfsym fun) rest))
-Only in ./src/cmp: cmpmain.lsp.orig
 diff -rc ../ecl-11.1.1/src/configure ./src/configure
 *** ../ecl-11.1.1/src/configure	Sun Jan 16 13:39:59 2011
---- ./src/configure	Fri May 20 00:29:52 2011
+--- ./src/configure	Thu Jan  5 07:06:11 2012
 ***************
 *** 9033,9042 ****
   
@@ -291,7 +290,7 @@ diff -rc ../ecl-11.1.1/src/configure ./src/configure
   $as_echo "#define TCP 1" >>confdefs.h
 diff -rc ../ecl-11.1.1/src/gc/darwin_stop_world.c ./src/gc/darwin_stop_world.c
 *** ../ecl-11.1.1/src/gc/darwin_stop_world.c	Sun Jan 16 13:40:00 2011
---- ./src/gc/darwin_stop_world.c	Thu May 19 16:10:48 2011
+--- ./src/gc/darwin_stop_world.c	Thu Jan  5 07:06:11 2012
 ***************
 *** 174,179 ****
 --- 174,201 ----
@@ -364,7 +363,7 @@ diff -rc ../ecl-11.1.1/src/gc/darwin_stop_world.c ./src/gc/darwin_stop_world.c
   #     endif
 diff -rc ../ecl-11.1.1/src/gc/include/private/gc_priv.h ./src/gc/include/private/gc_priv.h
 *** ../ecl-11.1.1/src/gc/include/private/gc_priv.h	Sun Jan 16 13:40:00 2011
---- ./src/gc/include/private/gc_priv.h	Thu May 19 16:10:48 2011
+--- ./src/gc/include/private/gc_priv.h	Thu Jan  5 07:06:11 2012
 ***************
 *** 401,409 ****
   #                 define GC_GETSECTBYNAME getsectbynamefromheader_64
@@ -392,7 +391,7 @@ diff -rc ../ecl-11.1.1/src/gc/include/private/gc_priv.h ./src/gc/include/private
      The structure has changed its definition in different Darwin versions.
 diff -rc ../ecl-11.1.1/src/gc/include/private/gcconfig.h ./src/gc/include/private/gcconfig.h
 *** ../ecl-11.1.1/src/gc/include/private/gcconfig.h	Sun Jan 16 13:40:00 2011
---- ./src/gc/include/private/gcconfig.h	Thu May 19 16:11:39 2011
+--- ./src/gc/include/private/gcconfig.h	Thu Jan  5 07:06:11 2012
 ***************
 *** 61,73 ****
   #    define FREEBSD
@@ -675,11 +674,9 @@ diff -rc ../ecl-11.1.1/src/gc/include/private/gcconfig.h ./src/gc/include/privat
         /* XXX: see get_end(3), get_etext() and get_end() should not be used.
   	 These aren't used when dyld support is enabled (it is by default) */
   #     define DATASTART ((ptr_t) get_etext())
-Only in ./src/gc/include/private: gcconfig.h.orig
-Only in ./src/gc/include/private: gcconfig.h.rej
 diff -rc ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h
 *** ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Sun Jan 16 13:40:00 2011
---- ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Fri May 20 00:01:52 2011
+--- ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h	Thu Jan  5 07:06:11 2012
 ***************
 *** 32,41 ****
   */
@@ -1027,10 +1024,49 @@ diff -rc ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/arm.h
   #else
   /* pre ARMv6 architecures ... */
    
-Only in ./src/gc/libatomic_ops-1.2/src: atomic_ops_stack.i
+diff -rc ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86.h ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86.h
+*** ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86.h	Sun Jan 16 13:40:00 2011
+--- ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86.h	Thu Jan  5 07:21:02 2012
+***************
+*** 113,119 ****
+    /* Note: the "xchg" instruction does not need a "lock" prefix */
+    __asm__ __volatile__("xchgb %0, %1"
+  		: "=q"(oldval), "=m"(*addr)
+! 		: "0"(0xff), "m"(*addr) : "memory");
+    return (AO_TS_VAL_t)oldval;
+  }
+  
+--- 113,119 ----
+    /* Note: the "xchg" instruction does not need a "lock" prefix */
+    __asm__ __volatile__("xchgb %0, %1"
+  		: "=q"(oldval), "=m"(*addr)
+!                 : "0"((unsigned char)0xff), "m"(*addr) : "memory");
+    return (AO_TS_VAL_t)oldval;
+  }
+  
+diff -rc ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86_64.h ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86_64.h
+*** ../ecl-11.1.1/src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86_64.h	Sun Jan 16 13:40:00 2011
+--- ./src/gc/libatomic_ops-1.2/src/atomic_ops/sysdeps/gcc/x86_64.h	Thu Jan  5 07:17:12 2012
+***************
+*** 126,132 ****
+    /* Note: the "xchg" instruction does not need a "lock" prefix */
+    __asm__ __volatile__("xchgb %0, %1"
+  		: "=q"(oldval), "=m"(*addr)
+! 		: "0"(0xff), "m"(*addr) : "memory");
+    return (AO_TS_VAL_t)oldval;
+  }
+  
+--- 126,132 ----
+    /* Note: the "xchg" instruction does not need a "lock" prefix */
+    __asm__ __volatile__("xchgb %0, %1"
+  		: "=q"(oldval), "=m"(*addr)
+!                 : "0"((unsigned char)0xff), "m"(*addr) : "memory");
+    return (AO_TS_VAL_t)oldval;
+  }
+  
 diff -rc ../ecl-11.1.1/src/gmp/mpn/arm/invert_limb.asm ./src/gmp/mpn/arm/invert_limb.asm
 *** ../ecl-11.1.1/src/gmp/mpn/arm/invert_limb.asm	Sun Jan 16 13:40:00 2011
---- ./src/gmp/mpn/arm/invert_limb.asm	Thu May 19 16:10:48 2011
+--- ./src/gmp/mpn/arm/invert_limb.asm	Thu Jan  5 07:06:11 2012
 ***************
 *** 6,12 ****
   
@@ -1212,7 +1248,7 @@ diff -rc ../ecl-11.1.1/src/gmp/mpn/arm/invert_limb.asm ./src/gmp/mpn/arm/invert_
 ! ASM_END()
 diff -rc ../ecl-11.1.1/src/lsp/predlib.lsp ./src/lsp/predlib.lsp
 *** ../ecl-11.1.1/src/lsp/predlib.lsp	Sun Jan 16 13:40:02 2011
---- ./src/lsp/predlib.lsp	Fri May 20 10:50:41 2011
+--- ./src/lsp/predlib.lsp	Thu Jan  5 07:06:11 2012
 ***************
 *** 39,45 ****
     (si:fill-array-with-elt *upgraded-array-element-type-cache* nil 0 nil))

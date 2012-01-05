@@ -48,8 +48,8 @@ base_config_opts="\
 	--with-tcp=builtin \
 	--with-x=no \
 	--with-dffi=no"
-CC_bin=gcc-4.2
-LD_bin=gcc-4.2
+CC_bin=gcc
+LD_bin=gcc
 
 configure()
 {
